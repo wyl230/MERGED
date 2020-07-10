@@ -39,6 +39,7 @@ class State:
         self.hp = 1000
         self.mp = 800
         self.shake = False
+        self.enhanced = False # 强力的普通攻击 
         self.skills_power = [5 for _ in range(7)]
         # self.skill.consume =
         self.pack_distraction = False

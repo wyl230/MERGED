@@ -67,6 +67,6 @@ class Skill:
         e.show_effects(f, t, cur_time,cnt2, another)
         e.real_effects(me, other, self)
 
-    def normal(self,me,other,e):
+    def normal(self,me,other,e,enhanced):
         ang = me.ac.angle_to(other.ac) 
-        e.draw_normal(ang,me.ac.pos,other) 
+        e.draw_normal(ang,me.ac.pos,other,enhanced) 

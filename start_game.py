@@ -111,7 +111,7 @@ def update_confront():
         the_one.drift_attack(
             p, keyboard[keys.K], screen, a, cur_time,cnt2,state)  # False has votex
         the_one.normal_attack(
-            p, keyboard[keys.SPACE], screen,a)  # False has votex
+            p, keyboard[keys.SPACE], screen,a,state.enhanced)  # False has votex
     for q in this_part:
         q.update()
     if game.show_text:
@@ -234,6 +234,7 @@ def draw_info(screen):
             screen, f'{p.name}[{cur_row//25}] hp = {p.hp}', (0, cur_row), p.hp/6, 15)
         btn2.draw_button(15)
     screen.draw.text(f'{int(cur_time)}s',topright=(WIDTH,0))
+    screen.draw.text(f'level {state.lvl}',topright=(WIDTH,30))
 
 def draw_confront():
     bg = confront_BackGround(Actor('bg6'))
@@ -306,6 +307,7 @@ def on_mouse_down(pos,button = mouse.RIGHT):
         if pos[0] < 100:
             state.has_skills = [True for _ in range(7)] 
             the_one.restore_cap = 3 
+            state.enhanced = True 
         if start_pic.collidepoint(pos):
             game.preparing = True
             game.on = True

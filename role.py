@@ -92,11 +92,11 @@ class Role:
                 self.attack(other)
         # pass
 
-    def normal_attack(self,other,SPACE,screen,skill,consume = 0):
+    def normal_attack(self,other,SPACE,screen,skill,enhanced,consume = 0):
         if not SPACE :
             return 
         e = Effect(self.ac.pos)
-        skill.normal(self,other,e) 
+        skill.normal(self,other,e,enhanced) 
         pass 
 
     def set_scherm(self, skill, pos=rand_pos()):
