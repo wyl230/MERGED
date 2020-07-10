@@ -26,7 +26,8 @@ from pgzero.screen import Screen
 keyboard: Keyboard  # 类型标注
 screen: Screen  # 类型标注
 
-
+def confront_init():
+    pass 
 class Confront:
     def __init__(self):
         pass

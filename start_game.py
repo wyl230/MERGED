@@ -2,6 +2,7 @@
 import pgzrun
 # import globalValues
 import time
+import end_of_battle as eb 
 from math import *
 from random import *
 from somefunc import *
@@ -51,6 +52,8 @@ class Gameclass:
         self.game_on = False
         self.preparing = False
         self.click_cnt = 0
+        self.win_battle = False 
+        self.battle_end = False 
         # self.game_on = True
         self.game_message = 'fine'
         self.reset()
@@ -223,6 +226,8 @@ def check_death():
         # clock.schedule_unique(draw, 1.0)
         # clock.schedule_unique(update, 1.0)
         # print('you lose')
+        game.battle_end = True 
+        game.win_battle = False 
         game.confronting = False
         # game.on = False
         game.on = True  # temporary
@@ -230,6 +235,8 @@ def check_death():
     elif not opposite:
         print('you win')
         game.confronting = False
+        game.battle_end = True 
+        game.win_battle = True
         # game.on = False  # 合并之后改为true
         game.on = True  # 合并之后改为true
         the_one.hp = 1000
@@ -354,6 +361,11 @@ def draw_start(screen):
     for t in texts:
         t.draw() 
 
+def draw_end_battle():
+    if game.win_battle:
+        eb.draw_win()
+    else:
+        eb.draw_lose() 
 def draw():
     global TITLE
     screen.clear()
@@ -368,8 +380,11 @@ def draw():
         draw_preparation(screen)
         draw_stars()
         return
+    if game.battle_end:
+        draw_end_battle() 
+        return 
     if game.confronting:
-        TITLE = 'nothing can be done now..'
+        TITLE = '未名湖就是这个样子的'
         draw_confront()
         update_confront()
         return
@@ -445,6 +460,10 @@ def on_key_down(key):
         if key == keys.J and the_one.mp >= 100:
             game.raining = True
         return
+    if game.battle_end:
+        if key == keys.SPACE:
+            game.battle_end = False 
+            game.on = False # temporary
 
 
 def on_key_up(key):
@@ -627,6 +646,8 @@ def act_with_npc():#与npc互动
 
 
 def main_update() :
+    global TITLE 
+    TITLE = '知道这是学校的哪个区域吗？'
     pos_update()
     act_with_npc()
     sound_update()

@@ -35,7 +35,7 @@ class Drop():
         )
 class Draw_rain():
     global u_color
-    def __init__(self,x_density = 44,y_density = 100):
+    def __init__(self,x_density = 100,y_density = 100):
         self.drops = [Drop((x,y)) for x in range(1000)[::x_density] for y in range(1000)[::y_density]]
     def draw_rain(self,screen):
         # screen.clear() 
