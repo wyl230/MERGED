@@ -42,9 +42,9 @@ P键随机净化一个敌人 使其不再具有攻击性
 
 J/K/Q键释放不同的攻击  
 
-J:DRIFT 对所有敌人释放伤害
+J:summon and rain 对所有敌人释放伤害
 
-K 类似
+K DRIFT attack 对所有敌人释放伤害
 
 Q对范围内释放伤害 
 
