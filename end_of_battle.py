@@ -26,7 +26,7 @@ tip = Actor('tip1',midbottom=(WIDTH//2,HEIGHT-100))
 def draw_lose(screen = None):
     bg[0].draw()
     lose.draw()
-    screen.draw.text()
+    # screen.draw.text()
     tip.draw()
 def draw_win(screen = None):
     choice(bg[1:3]).draw()
