@@ -44,7 +44,9 @@ class Effect:
     def init(self):
         self.cnt = 0
 
-    def draw_normal(self, ang, pos, other, enhanced=False):
+    def draw_normal(self, ang, pos, other,me, enhanced=False):
+        if me.mp <= 0:
+            return 
         if enhanced:
             # 强力模式 temporary
             nor = []
@@ -57,12 +59,14 @@ class Effect:
                 if i.colliderect(other.ac):
                     other.hp -= 1
             return
+        me.mp -= 1
         t = choice(normals)
         t.angle = ang + 180
         t.pos = pos
         t.draw()
         if t.colliderect(other.ac):
             other.hp -= 1
+            me.mp += 2
 
     def hunt_effects(self, f, t, cur_time):
         if self.cnt == 0:

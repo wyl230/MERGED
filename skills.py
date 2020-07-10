@@ -69,4 +69,4 @@ class Skill:
 
     def normal(self,me,other,e,enhanced):
         ang = me.ac.angle_to(other.ac) 
-        e.draw_normal(ang,me.ac.pos,other,enhanced) 
+        e.draw_normal(ang,me.ac.pos,other,me,enhanced) 

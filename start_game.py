@@ -170,7 +170,7 @@ def draw_main_info():
 
 
 def update2_confront(dt):
-    if game.raining:
+    if game.raining and state.has_skills[4]:
         rain.update_rain(dt)
 
 
@@ -266,7 +266,7 @@ def draw_confront():
     for p in opposite + this_part:
         p.draw()
         p.random_walk()
-    if game.raining:
+    if game.raining and state.has_skills[4]:
         rain.draw_rain(screen)
     draw_info(screen)
 
