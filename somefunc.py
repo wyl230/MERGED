@@ -34,6 +34,8 @@ u_color = [u.lower() for u in u_color]
 def percent(x):
     return randint(1, 100) < x
 
+def flip(game):
+    game.inter = False
 
 def cal_dist(f, t):
     a = np.array(f)

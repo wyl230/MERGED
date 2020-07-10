@@ -36,14 +36,18 @@ rab_live = True
 state = State()
 start_time = time.time()
 rain = Draw_rain(100, 150)
-randcolors = [choice(COLORS) for i in range(20)]
+randnums = [randint(100,400) for _ in range(100)]
+randcolors = [choice(COLORS) for i in range(100)]
 randposes = [rand_pos() for _ in range(100)] 
 randtexts = [choice(texts) for _ in range(100) ]
 
 
 class Gameclass:
     def __init__(self):
-        self.level = 1
+        self.inter = False # temporate
+        self.intertime = 1.0 
+        # self.inter = True  
+        self.level = 0 # 界面层级 非人物等级
         self.time = 0.
         self.score = 0
         self.game_speed = 30
@@ -91,7 +95,8 @@ opposite.extend(add_opst)
 # ef1 = Effect()
 
 
-
+def flip():
+    game.inter = not game.inter
 
 def update_confront():
     a = Skill(screen)
@@ -114,7 +119,7 @@ def update_confront():
             p, keyboard[keys.SPACE], screen,a,state.enhanced)  # False has votex
     for q in this_part:
         q.update()
-    if game.show_text:
+    if game.show_text and state.has_skills[2]:
         instant_text('purifying!!!', screen, game.show_text_pos)
         # if keyboard[keys.P]:
         # a.purify(opposite,this_part)
@@ -201,8 +206,22 @@ def draw_preparation(screen):
     screen.draw.text('Please click on the Phalanx on the left.\nYou have three chances.', midtop=(
         WIDTH*3//4, HEIGHT // 5), fontsize=35, color='maroon')
 
-
+def draw_inter(screen):
+    for i in range(8):
+        x,y = randposes[i]
+        x += randint(-3,3)
+        y += randint(-3,3) 
+        randposes[i] = x,y
+        randnums[i] += randint(-2,4)
+    for i in range(8):
+        screen.draw.filled_circle(randposes[i*(game.level+1)],randnums[i*(game.level+1)],randcolors[i*(game.level+1)]) 
+    draw_packs() 
+def update_inter():
+    pass
 def update(dt):
+    if game.inter:
+        update_inter() 
+        return 
     if not game.on:
         update_stars(dt)
         return
@@ -279,6 +298,9 @@ def draw_end_battle():
 def draw():
     global TITLE
     screen.clear()
+    if game.inter:
+        draw_inter(screen)
+        return 
     if not game.on:
         draw_start(screen)
         draw_stars(screen)
@@ -311,9 +333,16 @@ def on_mouse_down(pos,button = mouse.RIGHT):
         if start_pic.collidepoint(pos):
             game.preparing = True
             game.on = True
+            if not game.inter:
+                game.inter = True 
+                clock.schedule(flip,game.intertime)
         return
     if game.preparing:
         if game.click_cnt >= 3:
+            if game.level == 0:
+                game.inter = True 
+                clock.schedule(flip,game.intertime)
+                game.level = 1
             game.preparing = False
             return
         for v in vortex:
@@ -334,6 +363,9 @@ def on_mouse_down(pos,button = mouse.RIGHT):
         game.confronting = True 
         state.renew(opposite,this_part) 
         the_one.shrink(state)
+        if not game.inter:
+            game.inter = True
+            clock.schedule(flip,game.intertime) 
     elif button == mouse.LEFT  and talk.collidepoint(pos) and allcondition.showtalk==False:
         allcondition.showtalk=True
         allcondition.showfight =False
@@ -407,12 +439,20 @@ def cnter():
     global cnt
     # print(cnt)
     cnt += 1
-    if game.show_text:
-        clock.schedule(shuttext, 0.3)
+    # if not game.inter:
+    #     randcolors = [choice(COLORS) for i in range(20)]
+    #     randnums = [randint(50,100) for _ in range(100)]
+    #     randposes = [rand_pos() for _ in range(100)] 
+    # if game.show_text:
+        # clock.schedule(shuttext, 0.3)
 cnt2 = 0
 def cnter2():
     global cnt2 
     cnt2 += 1
+    randcolors = [choice(COLORS) for i in range(100)]
+    randnums = [randint(50,240) for _ in range(100)]
+    randposes = [rand_pos() for _ in range(100)] 
+    # print(randcolors)
     print(cnt2) 
 clock.schedule_interval(cnter, 0.3)
 clock.schedule_interval(cnter2, 2)
