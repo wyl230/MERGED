@@ -50,7 +50,9 @@ class Skill:
         others.remove(o)
         this_part.append(o)
 
-    def purify(self, others, this_part):
+    def purify(self, others, this_part,state):
+        if not state.has_skills[2]:
+            return 
         if not others:
             return (0, 0)
         o = choice(others)
@@ -65,3 +67,6 @@ class Skill:
         e.show_effects(f, t, cur_time,cnt2, another)
         e.real_effects(me, other, self)
 
+    def normal(self,me,other,e):
+        ang = me.ac.angle_to(other.ac) 
+        e.draw_normal(ang,me.ac.pos,other) 

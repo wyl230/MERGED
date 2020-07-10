@@ -31,12 +31,15 @@ screen: Screen  # 类型标注
 cur_speed = [22,14,7]
 class State:
     def __init__(self):
-        self.has_skills = [False if _ else True for _ in range(5)]
+        # self.has_skills = [False if _ else True for _ in range(7)] 
+        self.has_skills = [False for _ in range(7)]
         self.difficulty_level = 0
+        self.lvl = 1 
+        self.times_needed_to_lup = self.lvl**2
         self.hp = 1000
         self.mp = 800
         self.shake = False
-        self.skills_power = [5 for _ in range(5)]
+        self.skills_power = [5 for _ in range(7)]
         # self.skill.consume =
         self.pack_distraction = False
         self.purification_capacity = 2

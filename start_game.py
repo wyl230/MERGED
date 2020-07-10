@@ -100,16 +100,18 @@ def update_confront():
     if state.shake:
         the_one.random_walk() # 操控的角色抖动 可用来加大难度
     # 随机出现的屏障
-    if percent(the_one.restore_cap):
+    if percent(the_one.restore_cap) and state.has_skills[5]:
         a.scherm(the_one, the_one.pos(), 30)
     for p in opposite:
         p.update()
         p.if_physical_atk(the_one)
-        the_one.release_attack(p, keyboard[keys.Q], screen)
+        the_one.release_attack(p, keyboard[keys.Q], screen,state)
         the_one.drift_attack(
-            p, keyboard[keys.J], screen, a, cur_time,cnt2, False)  # False has votex
+            p, keyboard[keys.J], screen, a, cur_time,cnt2,state, False)  # False has votex
         the_one.drift_attack(
-            p, keyboard[keys.K], screen, a, cur_time,cnt2)  # False has votex
+            p, keyboard[keys.K], screen, a, cur_time,cnt2,state)  # False has votex
+        the_one.normal_attack(
+            p, keyboard[keys.SPACE], screen,a)  # False has votex
     for q in this_part:
         q.update()
     if game.show_text:
@@ -239,7 +241,7 @@ def draw_confront():
     # bg.shake()
     bg.draw()
     the_one.draw()
-    the_one.smooth_walk(keyboard[keys.SPACE], keyboard[keys.UP] or keyboard[keys.W], keyboard[keys.DOWN] or keyboard[keys.S],
+    the_one.smooth_walk(keyboard[keys.L], keyboard[keys.UP] or keyboard[keys.W], keyboard[keys.DOWN] or keyboard[keys.S],
                         keyboard[keys.LEFT]or keyboard[keys.A], keyboard[keys.RIGHT]or keyboard[keys.D], keyboard[keys.B], keyboard[keys.E], keyboard[keys.Q],state.speed)
     for p in opposite + this_part:
         p.draw()
@@ -301,6 +303,9 @@ def on_mouse_down(pos,button = mouse.RIGHT):
     global vortex,vortexs
     print(f"you just click{pos}")
     if not game.on:
+        if pos[0] < 100:
+            state.has_skills = [True for _ in range(7)] 
+            the_one.restore_cap = 3 
         if start_pic.collidepoint(pos):
             game.preparing = True
             game.on = True
@@ -326,7 +331,7 @@ def on_mouse_down(pos,button = mouse.RIGHT):
         state.difficulty_level = allcondition.fighthard 
         game.confronting = True 
         state.renew(opposite,this_part) 
-        the_one.shrink()
+        the_one.shrink(state)
     elif button == mouse.LEFT  and talk.collidepoint(pos) and allcondition.showtalk==False:
         allcondition.showtalk=True
         allcondition.showfight =False
@@ -359,7 +364,7 @@ def on_mouse_move(pos):
 def confront_one_key_down(key):
     if key is keys.P:
         a = Skill(screen)
-        game.show_text_pos = a.purify(opposite, this_part)
+        game.show_text_pos = a.purify(opposite, this_part,state)
         game.show_text = True
 
 

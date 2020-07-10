@@ -6,7 +6,7 @@ from math import *
 from random import *
 # from somefunc import *
 from somefunc import *
-import numpy as np 
+import numpy as np
 from pgzero.actor import Actor
 from pgzero.loaders import sounds
 from pgzero.clock import clock
@@ -22,56 +22,85 @@ from pgzero.keyboard import keys, Keyboard
 from pgzero.screen import Screen
 keyboard: Keyboard  # 类型标注
 screen: Screen  # 类型标注
+normals = [Actor(f'normal{cnt}.png_no_bgs', (555, 250),
+                 anchor=(350, 0)) for cnt in range(1, 10)]
+rand_nor_chose = [randint(0, 8) for _ in range(100)]
+at_effects = [Actor('at1'), Actor('at2'), Actor('at3')]
+vortexs = [Actor('vortex1'), Actor('vortex2'), Actor(
+    'vortex3'), Actor('vortex4'), Actor('vortex5'), ]
+vortex = [Actor('vortex1'), Actor('vortex2'), Actor(
+    'vortex3'), Actor('vortex4'), Actor('vortex5'), ]
 
-at_effects = [Actor('at1'),Actor('at2'),Actor('at3')]
-vortexs = [Actor('vortex1'),Actor('vortex2'),Actor('vortex3'),Actor('vortex4'),Actor('vortex5'),]
-vortex = [Actor('vortex1'),Actor('vortex2'),Actor('vortex3'),Actor('vortex4'),Actor('vortex5'),]
+
 class Effect:
-    def __init__(self,pos):
+    def __init__(self, pos):
         self.dist = 0.0
         self.at_affects = at_effects
         self.cnt = 0
+        self.cnter = 0
         for p in self.at_affects:
-            p.x,p.y = pos 
+            p.x, p.y = pos
+
     def init(self):
         self.cnt = 0
-    def hunt_effects(self,f,t,cur_time):
+
+    def draw_normal(self, ang, pos, other):
+        t = choice(normals)
+        t.angle = ang + 180
+        t.pos = pos
+        # 强力模式 temporary 
+        # nor = [] 
+        # for v in normals:
+        # v.angle = ang + 180
+        # v.pos = pos
+        # nor.append(v)
+        t.draw()
+        if t.colliderect(other.ac):
+            other.hp -= 1
+        # for i in nor:
+            # if i.colliderect(other.ac):
+            # other.hp -= 1
+
+    def hunt_effects(self, f, t, cur_time):
         if self.cnt == 0:
             for v in at_effects:
-                v.pos = f 
+                v.pos = f
             self.cnt = 1
         elif self.cnt >= 5:
-            self.init() 
-        else :
-            fx,fy = f 
-            tx,ty = t 
-            d = tx - fx,ty - fy 
-            dx ,dy =(i/5 for i in d)  
-            for i,e in zip(range(len(at_effects)),at_effects):
-                x,y = e.pos 
-                at_effects[i].pos = x + dx,y + dy
-                print(at_effects[i].pos,x+dx,y+dy)
+            self.init()
+        else:
+            fx, fy = f
+            tx, ty = t
+            d = tx - fx, ty - fy
+            dx, dy = (i/5 for i in d)
+            for i, e in zip(range(len(at_effects)), at_effects):
+                x, y = e.pos
+                at_effects[i].pos = x + dx, y + dy
+                print(at_effects[i].pos, x+dx, y+dy)
                 at_effects[i].angle += 1
-            self.cnt += 1                 
+            self.cnt += 1
         # print(at_effects[0].pos)
-        at_effects[elapse_pos(cur_time,3)].draw() 
-    def show_effects(self,f,t,cur_time,cnt2,another = True  ):
-        # dist = cal_dist(f,t) 
+        at_effects[elapse_pos(cur_time, 3)].draw()
+
+    def show_effects(self, f, t, cur_time, cnt2, another=True):
+        # dist = cal_dist(f,t)
         if another:
-            p = rand_pos() 
+            p = rand_pos()
             for v in at_effects:
                 v.pos = p
-            at_effects[elapse_pos(cur_time,3)].draw() 
+            at_effects[elapse_pos(cur_time, 3)].draw()
         else:
-            # chose = choice(vortexs) 
-            chose = vortexs[cnt2%5]
-        # or below  also attck all 
+            # chose = choice(vortexs)
+            chose = vortexs[cnt2 % 5]
+        # or below  also attck all
             chose.pos = f
-            chose.draw() 
+            chose.draw()
             # print(self.dist)
-    def real_effects(self,me,other,skill):
-        other.hp -= skill.power 
-        me.mp -= skill.consume 
 
-def instant_text(msg,screen,pos = rand_pos()):
-    screen.draw.text(msg,midtop = pos ) 
+    def real_effects(self, me, other, skill):
+        other.hp -= skill.power
+        me.mp -= skill.consume
+
+
+def instant_text(msg, screen, pos=rand_pos()):
+    screen.draw.text(msg, midtop=pos)

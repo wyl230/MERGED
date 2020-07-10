@@ -24,6 +24,7 @@ pokemons = [Actor(f'{cc}.jpg_no_bgs',rand_pos()) for cc in range(494,514) if cc 
 # a = Actor('at.gif') 
 cur_time = 0.0 
 rain = Draw_rain() 
+pokemons[1].image.set_alpha()
 def draw_rain():
     for i in range(100):
         x,y = (10*i,5 * elapse_pos(cur_time))
@@ -36,6 +37,7 @@ def draw_time_info():
     # screen.draw.text(f'{cal_dist((0,0),(1,1))}',midtop = MIDDLE)
     screen.draw.text(f'{cur_time:.2f}',midtop = MIDDLE) 
 cnt = 1 
+normals = [Actor(f'normal{cnt}.png_no_bgs',(555,250),anchor=(350,0)) for cnt in range(1,10)]
 def f():
     global cnt 
     print(cnt)
@@ -65,10 +67,17 @@ clock.schedule_interval(f,1.1)
     # 
 # hunt = lambda :a.hunt_effects((0,0),MIDDLE,cur_time)
 def draw():
-    for p in pokemons:
-        p.draw() 
-        p.x += randint(-1,1) 
-        p.y += randint(-1,1) 
+    # screen.draw.filled_circle(ra)
+    # choice(normals).draw()
+    # l = [] 
+    # for n in normals:
+    #     n.angle += 90 
+    #     l.append(n)
+    # choice(l).draw()
+    # for p in pokemons:
+    #     p.draw() 
+    #     p.x += randint(-1,1) 
+    #     p.y += randint(-1,1) 
     # a.hunt_effects(rand_pos(),rand_pos(),cur_time) # call ones and the parameter doesn't change 
     # hunt()
     # clock.schedule(hunt,1.0) 
@@ -78,6 +87,8 @@ def draw():
     # a.draw() 
     # pass 
     # screen.draw.filled_rect( Rect(0, 0, 222, 300), "gold" )
+    screen.draw.filled_rect( Rect(0, 0, 222, 300), (128,0,0,0.1))
+    screen.draw.filled_rect( Rect(111, 111, 555, 555), (128,0,0,0.01))
     # screen.draw.line(rand_pos(),rand_pos(),rand_color())
 pgzrun.go() 
 

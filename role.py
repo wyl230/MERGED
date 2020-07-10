@@ -47,7 +47,9 @@ class Role:
         # self.skills = ['walk']
         self.spinning = False
         self.has_scherm = False
-    def shrink(self):
+    def shrink(self,state):
+        if not state.has_skills[0]:
+            return 
         self.ac = Actor('op1bs') 
         self.shrinked = True 
     def renew(self,hp,mp):
@@ -68,13 +70,19 @@ class Role:
         if self.spinning:
             self.ac.angle += 1
 
-    def drift_attack(self, other, J, screen, skill, cur_time,cnt2, another=True, consume=10):
+    def drift_attack(self, other, J, screen, skill, cur_time,cnt2, state,another=True, consume=10):
+        if not state.has_skills[4] and another:
+            return 
+        if not state.has_skills[3] and not another:
+            return 
         if not J or self.mp <= consume:
             return
         e = Effect(self.ac.pos)
         skill.drift(self, other, e, cur_time,cnt2, another)
 
-    def release_attack(self, other, Q, screen, consume=1):
+    def release_attack(self, other, Q, screen,state, consume=1):
+        if not state.has_skills[1]:
+            return 
         if (not Q)or self.mp <= consume:
             return
         self.mp -= consume
@@ -84,12 +92,19 @@ class Role:
                 self.attack(other)
         # pass
 
+    def normal_attack(self,other,SPACE,screen,skill,consume = 0):
+        if not SPACE :
+            return 
+        e = Effect(self.ac.pos)
+        skill.normal(self,other,e) 
+        pass 
+
     def set_scherm(self, skill, pos=rand_pos()):
         skill.scherm(pos)
         self.has_scherm = True
 
-    def smooth_walk(self, s, u, d, l, r, B, E, Q,mainspeed = 16):
-        if s:
+    def smooth_walk(self, L, u, d, l, r, B, E, Q,mainspeed = 16):
+        if L:
             # self.ac.x += mainspeed
             self.ac.angle += 1
         if B:
