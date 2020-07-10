@@ -19,6 +19,8 @@ HEIGHT = 600
 MIDDLE = WIDTH//2,HEIGHT//2
 start_time = time() 
 LINE_COLOR = 'gold' 
+pokemons = [Actor(f'{cc}.jpg_no_bgs',rand_pos()) for cc in range(494,514) if cc != 506]
+# pokemons = [Actor(f'{cc}',rand_pos()) for cc in range(494,502)]
 # a = Actor('at.gif') 
 cur_time = 0.0 
 rain = Draw_rain() 
@@ -46,7 +48,7 @@ def update(dt):
     cur_time = time() - start_time 
     # a.hunt_effects(rand_pos(),rand_pos(),cur_time)
     # rain.update_rain(dt) 
-    # a.show_effects((0,0),(444,333),cur_time) 
+    # a.    s((0,0),(444,333),cur_time) 
     # at_effects[elapse_pos(cur_time,3)].draw()
     # for e in at_effects:
     #     x,y = e.pos 
@@ -63,7 +65,11 @@ clock.schedule_interval(f,1.1)
     # 
 # hunt = lambda :a.hunt_effects((0,0),MIDDLE,cur_time)
 def draw():
-    a.hunt_effects(rand_pos(),rand_pos(),cur_time) # call ones and the parameter doesn't change 
+    for p in pokemons:
+        p.draw() 
+        p.x += randint(-1,1) 
+        p.y += randint(-1,1) 
+    # a.hunt_effects(rand_pos(),rand_pos(),cur_time) # call ones and the parameter doesn't change 
     # hunt()
     # clock.schedule(hunt,1.0) 
     # clock.schedule_unique(hunt,1.3)

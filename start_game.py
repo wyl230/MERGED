@@ -7,6 +7,8 @@ from math import *
 from random import *
 from somefunc import *
 from pre_written import *
+from cur_state import *
+from star import *
 from confront import *
 from rainstorm import *
 from button import *
@@ -31,6 +33,7 @@ LINE_COLOR = 'gold'
 cur_time = 0.0
 cnt = 0
 rab_live = True
+state = State()
 start_time = time.time()
 rain = Draw_rain(100, 150)
 randcolors = [choice(COLORS) for i in range(20)]
@@ -73,104 +76,8 @@ WIDTH = 1000
 HEIGHT = 562  # 1000 * 9 // 16
 MIDDLE = WIDTH//2, HEIGHT//2
 start_pic = Actor('gamestart', (1000//2, 562//2))
-ACCEL = 1.0
-DRAG = 0.9
-TRAIL_LENGTH = 2
-MIN_WRAP_FACTOR = 0.1
-BOUNDS = Rect(0, 0, WIDTH, HEIGHT)
+
 FONT = 'eunomia_regular'
-
-warp_factor = MIN_WRAP_FACTOR
-centerx = WIDTH // 2
-centery = HEIGHT // 2
-stars = []
-
-
-class Star:
-    __slots__ = (
-        'pos', 'vel', 'brightness', 'speed', 'position_history'
-    )
-
-    def __init__(self, pos, vel):
-        self.pos = pos
-        self.vel = vel
-        self.brightness = 10
-        self.speed = hypot(*vel)
-
-    @property
-    def end_pos(self):
-        x, y = self.pos
-        vx, vy = self.vel
-
-        return (
-            x - vx * warp_factor * TRAIL_LENGTH / 60,
-            y - vy * warp_factor * TRAIL_LENGTH / 60,
-        )
-
-
-lastc = (255, 255, 255)
-
-
-def draw_stars():
-    def f(): return randint(10, 255)  # brighter
-    global lastc
-
-    if randint(1, 60) != 1:
-        color = lastc
-    else:
-        color = (f(), f(), f())
-    lastc = color
-    for star in stars:
-        b = star.brightness
-        cur_color = (int(i*b/5) for i in color)
-        # color = (b*2,b*2,b*2)
-        # color = (1,111,11)
-        screen.draw.line(star.end_pos, star.pos, color)
-
-
-def update_stars(dt):
-    global stars, warp_factor
-    warp_factor = (
-        MIN_WRAP_FACTOR + (warp_factor - MIN_WRAP_FACTOR) * DRAG ** dt
-    )
-
-    while len(stars) < 300:
-        # Pick a direction and speed
-        angle = uniform(-pi, pi)
-        speed = 255 * uniform(0.3, 1.0) ** 2
-
-        # Turn the direction into position and velocity vectors
-        dx = cos(angle)
-        dy = sin(angle)
-        d = uniform(25 + TRAIL_LENGTH, 100)
-        pos = centerx + dx * d, centery + dy * d
-        vel = speed * dx, speed * dy
-
-        stars.append(Star(pos, vel))
-
-    # Update the positions of stars
-    for s in stars:
-        x, y = s.pos
-        vx, vy = s.vel
-
-        # Move according to speed and warp factor
-        x += vx * warp_factor * dt
-        y += vy * warp_factor * dt
-        s.pos = x, y
-
-        # Grow brighter
-        s.brightness = min(s.brightness + warp_factor * 200 * dt, s.speed)
-
-        # Get faster
-        s.vel = vx * 2 ** dt, vy * 2 ** dt
-
-    # Drop any stars that are completely off-screen
-    stars = [
-        star
-        for star in stars
-        if BOUNDS.collidepoint(star.end_pos)
-    ]
-
 
 game = Gameclass()
 all_actors = [Actor('poke9', rand_pos()), Actor('poke', rand_pos()), Actor('poke2', rand_pos()), Actor('poke3', rand_pos()), Actor('poke4', rand_pos(
@@ -212,6 +119,8 @@ def update_confront():
     #     pass
     #     # rain.update_rain()
     check_death()
+    if state.pack_distraction:
+        draw_packs() 
 
 
 def check_death():
@@ -330,7 +239,7 @@ def draw_confront():
     bg.draw()
     the_one.draw()
     the_one.smooth_walk(keyboard[keys.SPACE], keyboard[keys.UP] or keyboard[keys.W], keyboard[keys.DOWN] or keyboard[keys.S],
-                        keyboard[keys.LEFT]or keyboard[keys.A], keyboard[keys.RIGHT]or keyboard[keys.D], keyboard[keys.B], keyboard[keys.E], keyboard[keys.Q])
+                        keyboard[keys.LEFT]or keyboard[keys.A], keyboard[keys.RIGHT]or keyboard[keys.D], keyboard[keys.B], keyboard[keys.E], keyboard[keys.Q],state.speed)
     for p in opposite + this_part:
         p.draw()
         p.random_walk()
@@ -371,14 +280,14 @@ def draw():
     screen.clear()
     if not game.on:
         draw_start(screen)
-        draw_stars()
+        draw_stars(screen)
         # screen.fill('red')
         # screen.blit('background',(0,0))
         #
         return
     if game.preparing:
         draw_preparation(screen)
-        draw_stars()
+        draw_stars(screen)
         return
     if game.battle_end:
         draw_end_battle() 
@@ -432,15 +341,15 @@ def on_mouse_down(pos,button = mouse.RIGHT):
 
 
 def on_mouse_move(pos):
-    global centerx, centery
     if not game.on:
         if start_pic.collidepoint(pos):
             start_pic.angle = randint(-13, 13)
         else:
             start_pic.angle = 0
-            centerx, centery = pos
+            set_star_point(pos) 
         return
     if game.preparing:
+        set_star_point(pos) 
         centerx, centery = pos
         return
 
