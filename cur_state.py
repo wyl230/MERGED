@@ -1,10 +1,10 @@
 
-# 当前玩家所具有的能力 
+# 当前玩家所具有的能力
 
 import pgzrun
 # import globalValues
 import time
-import end_of_battle as eb 
+import end_of_battle as eb
 from math import *
 from random import *
 from somefunc import *
@@ -27,31 +27,41 @@ from pgzero.screen import Screen
 keyboard: Keyboard  # 类型标注
 screen: Screen  # 类型标注
 # skills: point scherm drift rain
+
+cur_speed = [22,14,7]
 class State:
     def __init__(self):
-        self.has_skills = [False if _ else True for _ in range(5) ] 
+        self.has_skills = [False if _ else True for _ in range(5)]
+        self.difficulty_level = 0
         self.hp = 1000
-        self.mp = 800 
-        self.shake = False 
+        self.mp = 800
+        self.shake = False
         self.skills_power = [5 for _ in range(5)]
-        # self.skill.consume = 
-        self.pack_distraction = False 
-        self.purification_capacity = 2 
+        # self.skill.consume =
+        self.pack_distraction = False
+        self.purification_capacity = 2
         self.speed = 30
-
+    def renew(self,opposite,this_part):
+        self.speed = cur_speed[self.difficulty_level] 
+        for i in opposite:
+            i.renew(1000 + self.difficulty_level*500,1000 + self.difficulty_level*500)
+        this_part = []
     def hp_up(self):
-        self.hp += randint(1,5) * self.hp//44
+        self.hp += randint(1, 5) * self.hp//44 * (self.difficulty_level+1)
+
     def mp_up(self):
-        self.mp =  randint(1,4) * self.mp//54
-    def try_get_skill(self,chances = 10):
+        self.mp = randint(1, 4) * self.mp//54
+
+    def try_get_skill(self, chances=10):
         if percent(chances):
             if self.learn_skill():
-                return True 
-        return False 
+                return True
+        return False
+
     def learn_skill(self):
-        f = choice(range(5))  
+        f = choice(range(5))
         if self.has_skills[f]:
-            return False 
+            return False
         else:
-            self.has_skills[f] = True 
-        return True         
+            self.has_skills[f] = True
+        return True

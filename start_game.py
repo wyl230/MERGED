@@ -82,9 +82,9 @@ FONT = 'eunomia_regular'
 game = Gameclass()
 all_actors = [Actor('poke9', rand_pos()), Actor('poke', rand_pos()), Actor('poke2', rand_pos()), Actor('poke3', rand_pos()), Actor('poke4', rand_pos(
 )), Actor('poke5', rand_pos()), Actor('poke6', rand_pos()), Actor('poke7', rand_pos()), Actor('poke8', rand_pos()), Actor('pokea', rand_pos())]
-the_one = Role(Actor('op1b', rand_pos()), 'YOU')
+the_one = Role(Actor('op1b', rand_pos()),1000,1000, 'YOU')
 this_part = []
-opposite = [Role(Actor('pokemon2s', rand_pos()), 'cute dragonfly')
+opposite = [Role(Actor('pokemon2s', rand_pos()),1000,1000, 'cute dragonfly')
             for _ in range(randint(2, 3))]
 add_opst = [Role(choice(all_actors)) for _ in range(5)]
 opposite.extend(add_opst)
@@ -251,9 +251,6 @@ def draw_confront():
     # screen.draw.text('asdf',midtop = rand_pos())
 
 
-def main_draw():
-    game.confronting = True
-    pass
 
 def draw_start(screen):
     for i,pos in zip(range(10),randposes[:10]):
@@ -298,8 +295,6 @@ def draw():
         update_confront()
         return
     main_draw()
-    # 下面写游戏开始后的内容
-
 
 def on_mouse_down(pos,button = mouse.RIGHT):
     global vortex,vortexs
@@ -326,7 +321,10 @@ def on_mouse_down(pos,button = mouse.RIGHT):
     elif button == mouse.LEFT  and fight[allcondition.fighthard].collidepoint(pos):
         allcondition.showfight=False
         allcondition.fighting =    True
+        # print(allcondition.fighthard)
+        state.difficulty_level = allcondition.fighthard 
         game.confronting = True 
+        state.renew(opposite,this_part) 
     elif button == mouse.LEFT  and talk.collidepoint(pos) and allcondition.showtalk==False:
         allcondition.showtalk=True
         allcondition.showfight =False

@@ -26,7 +26,7 @@ class mynpc(Actor) :
 allmap_info = []
 allmap_actor = [ ]
 
-allmap_info.append(MAP('zhongting',[]))
+allmap_info.append(MAP('zhongting',[])) 
 allmap_info.append(MAP('weiminghu',[]))
 allmap_info.append(MAP('xiaoshiguan',[]))
 allmap_info.append(MAP('lijiao',[]))

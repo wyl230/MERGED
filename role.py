@@ -33,7 +33,7 @@ class Pet:
 
 
 class Role:
-    def __init__(self, ac, name='the cutest', skills=None, hp=1000, mp=1000):
+    def __init__(self, ac, hp=1000, mp=1000, name='the cutest', skills=None):
         self.name = name
         self.skills = skills
         self.ac = ac
@@ -45,7 +45,11 @@ class Role:
         # self.skills = ['walk']
         self.spinning = False
         self.has_scherm = False
-
+    def renew(self,hp,mp):
+        self.maxHP = hp
+        self.maxMP = mp
+        self.mp = mp + randint(-222, 222)
+        self.hp = hp + randint(-222, 222)
     def auto_atk(self):
         pass
 
