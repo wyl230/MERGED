@@ -29,24 +29,29 @@ screen: Screen  # 类型标注
 # skills: point scherm drift rain
 class State:
     def __init__(self):
-        self.has_skills = [False if _ else True for _ in range(4) ] 
+        self.has_skills = [False if _ else True for _ in range(5) ] 
         self.hp = 1000
         self.mp = 800 
         self.shake = False 
-        self.skills_power = [5 for _ in range(4)]
+        self.skills_power = [5 for _ in range(5)]
         # self.skill.consume = 
         self.pack_distraction = False 
         self.purification_capacity = 2 
         self.speed = 30
 
     def hp_up(self):
-        self.hp = self.hp*9/8
+        self.hp += randint(1,5) * self.hp//44
     def mp_up(self):
-        self.mp = self.mp*9/8
+        self.mp =  randint(1,4) * self.mp//54
+    def try_get_skill(self,chances = 10):
+        if percent(chances):
+            if self.learn_skill():
+                return True 
+        return False 
     def learn_skill(self):
-        for i in self.has_skills:
-            if not i:
-                i = True 
-                break 
-        else :
-            pass 
+        f = choice(range(5))  
+        if self.has_skills[f]:
+            return False 
+        else:
+            self.has_skills[f] = True 
+        return True         

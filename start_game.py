@@ -272,9 +272,9 @@ def draw_start(screen):
 
 def draw_end_battle():
     if game.win_battle:
-        eb.draw_win()
+        eb.draw_win(screen,state)
     else:
-        eb.draw_lose(screen) 
+        eb.draw_lose(screen,state) 
 def draw():
     global TITLE
     screen.clear()
@@ -409,7 +409,6 @@ def cnter2():
     print(cnt2) 
 clock.schedule_interval(cnter, 0.3)
 clock.schedule_interval(cnter2, 2)
-#-------------------------------------------------#
 #-------------------------------------------------#
 from mymapandnpc import *
 from dialo import *
@@ -760,4 +759,5 @@ def trans_8_11():
     my.right = WIDTH - gdsize * 1.2
     my.top = gdsize * 7
     allcondition.nowmap = 11
+#-------------------------------------------------#
 pgzrun.go()
