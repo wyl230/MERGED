@@ -1,0 +1,641 @@
+# search temporary 
+import pgzrun
+# import globalValues
+import time
+from math import *
+from random import *
+from somefunc import *
+from pre_written import *
+from confront import *
+from rainstorm import *
+from button import *
+from pgzero.actor import Actor
+from pgzero.loaders import sounds
+from pgzero.keyboard import keys
+from pgzero.rect import Rect, ZRect
+from pgzero.loaders import sounds, images
+from pgzero import music, tone
+from pgzero.clock import clock
+from pgzero.builtins import keymods  # 似乎没有作用
+# keymods属性有: LSHIFT, RSHIFT, SHIFT, LCTRL, RCTRL, CTRL, LALT, RALT, ALT, LMETA, RMETA, META, NUM, CAPS, MODE
+# 可检测mod值，LCtrl: 64, RCtrl: 128, LAlt: 256, RAlt: 512, LShift: 1, RShift: 1, Capital: 8192
+from pgzero.constants import mouse
+from pgzero.animation import animate
+from pgzero.keyboard import keys, Keyboard
+from pgzero.screen import Screen
+keyboard: Keyboard  # 类型标注
+screen: Screen  # 类型标注
+TITLE = '好听的名字呢？？？？'
+LINE_COLOR = 'gold'
+cur_time = 0.0
+cnt = 0
+rab_live = True
+start_time = time.time()
+rain = Draw_rain(100, 150)
+randcolors = [choice(COLORS) for i in range(20)]
+randposes = [rand_pos() for _ in range(100)] 
+randtexts = [choice(texts) for _ in range(100) ]
+
+
+class Gameclass:
+    def __init__(self):
+        self.level = 1
+        self.time = 0.
+        self.score = 0
+        self.game_speed = 30
+        self.time_elapsed = 0.
+        self.show_text = False
+        self.show_text_pos = (MIDDLE)
+        self.blink = True
+        self.n_frames = 0
+        self.game_on = False
+        self.preparing = False
+        self.click_cnt = 0
+        # self.game_on = True
+        self.game_message = 'fine'
+        self.reset()
+        self.on = False
+        self.confronting = False
+        self.raining = False
+        # self.confronting = True
+
+    def reset(self):
+        pass
+
+    def check_game_over(self):
+        pass
+
+
+WIDTH = 1000
+HEIGHT = 562  # 1000 * 9 // 16
+MIDDLE = WIDTH//2, HEIGHT//2
+start_pic = Actor('gamestart', (1000//2, 562//2))
+ACCEL = 1.0
+DRAG = 0.9
+TRAIL_LENGTH = 2
+MIN_WRAP_FACTOR = 0.1
+BOUNDS = Rect(0, 0, WIDTH, HEIGHT)
+FONT = 'eunomia_regular'
+
+warp_factor = MIN_WRAP_FACTOR
+centerx = WIDTH // 2
+centery = HEIGHT // 2
+stars = []
+
+
+class Star:
+    __slots__ = (
+        'pos', 'vel', 'brightness', 'speed', 'position_history'
+    )
+
+    def __init__(self, pos, vel):
+        self.pos = pos
+        self.vel = vel
+        self.brightness = 10
+        self.speed = hypot(*vel)
+
+    @property
+    def end_pos(self):
+        x, y = self.pos
+        vx, vy = self.vel
+
+        return (
+            x - vx * warp_factor * TRAIL_LENGTH / 60,
+            y - vy * warp_factor * TRAIL_LENGTH / 60,
+        )
+
+
+lastc = (255, 255, 255)
+
+
+def draw_stars():
+    def f(): return randint(10, 255)  # brighter
+    global lastc
+
+    if randint(1, 60) != 1:
+        color = lastc
+    else:
+        color = (f(), f(), f())
+    lastc = color
+    for star in stars:
+        b = star.brightness
+        cur_color = (int(i*b/5) for i in color)
+        # color = (b*2,b*2,b*2)
+        # color = (1,111,11)
+        screen.draw.line(star.end_pos, star.pos, color)
+
+
+def update_stars(dt):
+    global stars, warp_factor
+    warp_factor = (
+        MIN_WRAP_FACTOR + (warp_factor - MIN_WRAP_FACTOR) * DRAG ** dt
+    )
+
+    while len(stars) < 300:
+        # Pick a direction and speed
+        angle = uniform(-pi, pi)
+        speed = 255 * uniform(0.3, 1.0) ** 2
+
+        # Turn the direction into position and velocity vectors
+        dx = cos(angle)
+        dy = sin(angle)
+        d = uniform(25 + TRAIL_LENGTH, 100)
+        pos = centerx + dx * d, centery + dy * d
+        vel = speed * dx, speed * dy
+
+        stars.append(Star(pos, vel))
+
+    # Update the positions of stars
+    for s in stars:
+        x, y = s.pos
+        vx, vy = s.vel
+
+        # Move according to speed and warp factor
+        x += vx * warp_factor * dt
+        y += vy * warp_factor * dt
+        s.pos = x, y
+
+        # Grow brighter
+        s.brightness = min(s.brightness + warp_factor * 200 * dt, s.speed)
+
+        # Get faster
+        s.vel = vx * 2 ** dt, vy * 2 ** dt
+
+    # Drop any stars that are completely off-screen
+    stars = [
+        star
+        for star in stars
+        if BOUNDS.collidepoint(star.end_pos)
+    ]
+
+
+game = Gameclass()
+all_actors = [Actor('poke9', rand_pos()), Actor('poke', rand_pos()), Actor('poke2', rand_pos()), Actor('poke3', rand_pos()), Actor('poke4', rand_pos(
+)), Actor('poke5', rand_pos()), Actor('poke6', rand_pos()), Actor('poke7', rand_pos()), Actor('poke8', rand_pos()), Actor('pokea', rand_pos())]
+the_one = Role(Actor('op1b', rand_pos()), 'YOU')
+this_part = []
+opposite = [Role(Actor('pokemon2s', rand_pos()), 'cute dragonfly')
+            for _ in range(randint(2, 3))]
+add_opst = [Role(choice(all_actors)) for _ in range(5)]
+opposite.extend(add_opst)
+# ef1 = Effect()
+
+
+
+
+def update_confront():
+    a = Skill(screen)
+    global cur_time
+    cur_time = time.time() - start_time
+    # the_one.random_walk() 操控的角色抖动 可用来加大难度
+    # 随机出现的屏障
+    if percent(3):
+        a.scherm(the_one, the_one.pos(), 30)
+    for p in opposite:
+        p.update()
+        p.if_physical_atk(the_one)
+        the_one.release_attack(p, keyboard[keys.Q], screen)
+        the_one.drift_attack(
+            p, keyboard[keys.J], screen, a, cur_time,cnt2, False)  # False has votex
+        the_one.drift_attack(
+            p, keyboard[keys.K], screen, a, cur_time,cnt2)  # False has votex
+    for q in this_part:
+        q.update()
+    if game.show_text:
+        instant_text('purifying!!!', screen, game.show_text_pos)
+        # if keyboard[keys.P]:
+        # a.purify(opposite,this_part)
+    # if game.raining:
+    #     pass
+    #     # rain.update_rain()
+    check_death()
+
+
+def check_death():
+    global opposite
+    for p in opposite:
+        if p.hp <= 0:
+            opposite.remove(p)
+    if the_one.hp < 0:
+        screen.draw.text('you lose', midtop=rand_pos())
+        # sleep(1)
+        # time.sleep(1.0)
+        # clock.schedule_unique(draw, 1.0)
+        # clock.schedule_unique(update, 1.0)
+        # print('you lose')
+        game.confronting = False
+        # game.on = False
+        game.on = True  # temporary
+        the_one.hp = 1000
+    elif not opposite:
+        print('you win')
+        game.confronting = False
+        # game.on = False  # 合并之后改为true
+        game.on = True  # 合并之后改为true
+        the_one.hp = 1000
+        opposite = [Role(Actor('pokemon2s', rand_pos()))
+                    for _ in range(randint(3, 5))]
+        add_opst = [Role(choice(all_actors)) for _ in range(3)]
+        opposite.extend(add_opst)
+
+
+def draw_main_info():
+    pass
+
+
+
+
+def update2_confront(dt):
+    if game.raining:
+        rain.update_rain(dt)
+
+
+def update_preparation():
+    pass
+
+
+def draw_preparation(screen):
+    # screen.draw.filled_circle((WIDTH//5,HEIGHT//4),100,u_color[0])
+    ix, iy = WIDTH//5, HEIGHT//4
+    for i, v in zip(range(len(vortex)), vortex):
+        v.x = (i % 3)*222 + ix
+        v.y = (i/3)*222 + iy
+        v.draw()
+        if v.image == 'check1s':
+            clicked = True
+            if i == 0:
+                screen.draw.text('you will have a more colorful life\n(more powerful when use skills)', midtop=(
+                    WIDTH*2//3, HEIGHT // 10), fontsize=30, color=randcolors[i])
+            elif i == 1:
+                screen.draw.text('you will be full of courage to explore your life.\n(the moving speed increased)', midtop=(
+                    WIDTH*2//3, HEIGHT // 2), fontsize=30, color=randcolors[i])
+            elif i == 2:
+                screen.draw.text('you will be full of courage to explore your life.\n(the moving speed increased)', midtop=(WIDTH*2//3, 2*HEIGHT // 5), fontsize=30, color =randcolors[i])
+            elif i == 3:
+                screen.draw.text('you will be full of courage to explore your life.\n(the moving speed increased)', midtop=(
+                    WIDTH*3//7, 3*HEIGHT // 5), fontsize=30, color=randcolors[i])
+            elif i == 4:
+                screen.draw.text('you will be full of courage to explore your life.\n(the moving speed increased)', midtop=(
+                    WIDTH*5//7, 4*HEIGHT // 5), fontsize=30, color=randcolors[i])
+
+            screen.draw.filled_circle(rand_pos(), 10, rand_color())
+    screen.draw.text('Please click on the Phalanx on the left.\nYou have three chances.', midtop=(
+        WIDTH*3//4, HEIGHT // 5), fontsize=35, color='maroon')
+
+
+def update(dt):
+    if not game.on:
+        update_stars(dt)
+        return
+    if game.preparing:
+        update_preparation()
+        update_stars(dt)
+    if game.confronting:
+        update2_confront(dt)
+        # update_confront() 在这里调用不能draw
+        return
+    # 游戏主界面
+    main_update()
+    # 展示信息
+    draw_main_info()
+
+
+def draw_info(screen):
+    cur_row = 0
+    btn = Button(screen, f'HP : {the_one.hp}', (0, 0), the_one.hp, 22)
+    btn.draw_button()
+    cur_row += 23
+    btn = Button(screen, f'MP : {the_one.mp}',
+                 (0, cur_row), the_one.mp, 22)
+    btn.draw_button()
+    cur_row += 13
+    for p in opposite:
+        cur_row += 18
+        btn2 = Button(
+            screen, f'{p.name}[{cur_row//25}] hp = {p.hp}', (0, cur_row), p.hp/6, 15)
+        btn2.draw_button(15)
+    screen.draw.text(f'{int(cur_time)}s',topright=(WIDTH,0))
+
+def draw_confront():
+    bg = confront_BackGround(Actor('bg6'))
+    # bg = confront_BackGround(Actor('confrontbg4a'),Actor('confrontbg4b'))
+    # bg.shake()
+    bg.draw()
+    the_one.draw()
+    the_one.smooth_walk(keyboard[keys.SPACE], keyboard[keys.UP] or keyboard[keys.W], keyboard[keys.DOWN] or keyboard[keys.S],
+                        keyboard[keys.LEFT]or keyboard[keys.A], keyboard[keys.RIGHT]or keyboard[keys.D], keyboard[keys.B], keyboard[keys.E], keyboard[keys.Q])
+    for p in opposite + this_part:
+        p.draw()
+        p.random_walk()
+    if game.raining:
+        rain.draw_rain(screen)
+    draw_info(screen)
+
+    # screen.draw.filled_circle(rand_pos(),10,rand_color())
+    # screen.draw.text('asdf',midtop = rand_pos())
+
+
+def main_draw():
+    game.confronting = True
+    pass
+
+def draw_start(screen):
+    for i,pos in zip(range(10),randposes[:10]):
+        # screen.draw.text(f'wyl{pos}',midtop = pos)
+        screen.draw.text(f'{randtexts[i]}',midtop = pos,color = randcolors[i+2])
+    start_pic.draw()
+    # texts = []
+    text = Actor('text1s',midtop = (WIDTH//2+120,HEIGHT//5-99),anchor=(99,99))
+    text2 = Actor('text2',midtop = randposes[10],anchor=(99,99))
+    text3 = Actor('text3',midtop = randposes[22],anchor=(99,99))
+    if cnt % 2:
+        text.angle += randint(-3,3) 
+    texts = [text,text2,text3]
+    for t in texts:
+        t.draw() 
+
+def draw():
+    global TITLE
+    screen.clear()
+    if not game.on:
+        draw_start(screen)
+        draw_stars()
+        # screen.fill('red')
+        # screen.blit('background',(0,0))
+        #
+        return
+    if game.preparing:
+        draw_preparation(screen)
+        draw_stars()
+        return
+    if game.confronting:
+        TITLE = 'nothing can be done now..'
+        draw_confront()
+        update_confront()
+        return
+    main_draw()
+    # 下面写游戏开始后的内容
+
+
+def on_mouse_down(pos,button = mouse.RIGHT):
+    global vortex,vortexs
+    print(f"you just click{pos}")
+    if not game.on:
+        if start_pic.collidepoint(pos):
+            game.preparing = True
+            game.on = True
+        return
+    if game.preparing:
+        if game.click_cnt >= 3:
+            game.preparing = False
+            return
+        for v in vortex:
+            if v.collidepoint(pos):
+                v.image = 'check1s'
+                game.click_cnt += 1
+        return 
+    allcondition.mousepos = pos
+    allcondition.fighting = False
+    if button == mouse.LEFT and allcondition.showtalk==True:
+        allcondition.talknum += 1
+        allcondition.makesound = True
+    elif button == mouse.LEFT  and fight.collidepoint(pos):
+        allcondition.showfight=False
+        allcondition.fighting =    True
+        game.confronting = True 
+    elif button == mouse.LEFT  and talk.collidepoint(pos) and allcondition.showtalk==False:
+        allcondition.showtalk=True
+        allcondition.showfight =False
+    #
+
+# def move_key_board(key):
+#     if game.confronting:
+#         if key == keys.J:
+#             game.raining = True
+#         else :
+#             game.raining = False
+
+
+def on_mouse_move(pos):
+    global centerx, centery
+    if not game.on:
+        if start_pic.collidepoint(pos):
+            start_pic.angle = randint(-13, 13)
+        else:
+            start_pic.angle = 0
+            centerx, centery = pos
+        return
+    if game.preparing:
+        centerx, centery = pos
+        return
+
+    #
+
+
+def confront_one_key_down(key):
+    if key is keys.P:
+        a = Skill(screen)
+        game.show_text_pos = a.purify(opposite, this_part)
+        game.show_text = True
+
+
+def on_key_down(key):
+    if game.confronting:
+        confront_one_key_down(key)
+        if key == keys.J and the_one.mp >= 100:
+            game.raining = True
+        return
+
+
+def on_key_up(key):
+    if game.confronting:
+        if key == keys.J:
+            game.raining = False
+        return
+
+    # mainspeed = 10
+    # if key is keys.UP:
+    #     rab.y -= mainspeed
+    # elif key is keys.DOWN:
+    #     rab.y += mainspeed
+    # elif key is keys.LEFT:
+    #     rab.x -= mainspeed
+    # elif key is keys.RIGHT:
+    #     rab.x += mainspeed
+
+
+def shuttext():
+    game.show_text = False
+
+
+def cnter():
+    global cnt
+    # print(cnt)
+    cnt += 1
+    if game.show_text:
+        clock.schedule(shuttext, 0.3)
+cnt2 = 0
+def cnter2():
+    global cnt2 
+    cnt2 += 1
+    print(cnt2) 
+clock.schedule_interval(cnter, 0.3)
+clock.schedule_interval(cnter2, 2)
+
+
+#-------------------------------------------------#
+#-------------------------------------------------#
+from mymapandnpc import *
+from dialo import *
+class condition:
+    def __init__(self):
+        self.fightpos = (1, 1)#对战对话的选择框出现位置
+        #self.contin = True#
+        self.showfight = False#是否显示对战对话框的位置
+        self.showtalk = False#是否正在对话
+        self.fightshuxing = 1#和玩家对战的npc的属性
+        self.nowmap = 5#现在显示的地图编号
+        self.talknum = 0#正在进行的对话
+        self.fighting =False#是否在对战
+        self.makesound =False#是否发出对话声音
+        self.mapsound =False#是否发出地图声音
+        self.mousepos = (-100,-100)#鼠标坐标
+allcondition = condition()
+class myself(Actor) :
+    __slots__ = (
+        'num'
+    )
+    def __init__(self,name,pos,num):
+        super().__init__(name,pos)
+        self.num = num
+my = myself("down1",(520,281),0)
+my_down = ['down1','down2','down3','down4']#移动时人物图像的变换
+my_up = ['up1','up2','up3','up4']
+my_left = ['left1','left2','left3','left4']
+my_right = ['right1','right2','right3','right4']
+
+fight =Actor("fight",(0,0))
+talk = Actor("talk",(0,0))
+def draw_npc():#画npc
+    for i in allmap_info[allcondition.nowmap].actor_npc :
+        i.draw()
+def draw_fightandtalk ():#画对战，对话的选择框
+    if allcondition.showfight :
+        fight.x ,fight.y =  allcondition.fightpos
+        fight.draw()
+        talk.draw()
+def draw_talk_dialogue():#画具体的对话
+    if allcondition.showtalk ==1:   #如果开始对话
+        out = choice(alldialogue)
+        if allcondition.talknum <len(out):#如果对话还没有结束
+            out [allcondition.talknum].draw()
+            clock.schedule_unique(sounds.duihua.stop, 1.0)
+        else :#对话结束重置状态
+            allcondition.showtalk = 0
+            allcondition.talknum = 0
+def main_draw():
+    screen.clear()
+    allmap_actor[allcondition.nowmap].draw()#画地图
+    draw_npc()#画npc
+    my.draw()#画人物自己
+    draw_fightandtalk()#画对战对话的选择框
+    draw_talk_dialogue()#画对话
+    temppos = (allcondition.mousepos[0]//31.25,allcondition.mousepos[1]//31.25)
+    if temppos in allmap_info[allcondition.nowmap].actor_gaoshi :
+        allmap_info[allcondition.nowmap].actor_gaoshi[temppos].draw()
+def move_key_board ():#主地图中的按键检测
+    if (not game.on) or game.preparing or game.confronting:
+        return 
+    if  allcondition.showtalk or allcondition.showfight :#如果正在对战或者对话
+        return
+    mainspeed = 5#人物移动速率
+    pict_change_speed=0.15#人物图像的变换速率
+    if keyboard[keys.SPACE]:
+        my.angle += 0.3
+    if keyboard[keys.UP]:
+        if allmap_info[allcondition.nowmap].bool_go[int((my.center[1] - mainspeed) // 31.25)][int(my.center[0] // 31.25)] == 1 :
+            if my.top > mainspeed:
+                my.y -= mainspeed
+                my.num += pict_change_speed
+                my.image = my_up[int(my.num) % 4]
+            elif allcondition.nowmap>1:
+                allcondition.nowmap -= 2
+                my.y = 562-my.height/2
+    elif keyboard[keys.DOWN]:
+        if allmap_info[allcondition.nowmap].bool_go[int((my.top + my.height + mainspeed) // 31.25)][int(my.center[0] // 31.25)] == 1 :
+            if    my.bottom < 558 - mainspeed:
+                my.y += mainspeed
+                my.num += pict_change_speed
+                my.image =my_down[int(my.num)%4]
+            elif allcondition.nowmap<4 :
+                allcondition.nowmap += 2
+                my.y = my.height/2
+    elif keyboard[keys.LEFT]:
+        if allmap_info[allcondition.nowmap].bool_go[int((my.center[1]) // 31.25)][int(abs((my.left - mainspeed) )// 31.25)] == 1 :
+            if  my.left > mainspeed:
+                my.x -= mainspeed
+                my.num += pict_change_speed
+                my.image = my_left[int(my.num) % 4]
+            elif allcondition.nowmap%2==1 :
+                allcondition.nowmap -= 1
+                my.x=1000-my.width/2
+    elif keyboard[keys.RIGHT]:
+        if allmap_info[allcondition.nowmap].bool_go[int((my.center[1]) // 31.25)][int((my.center[0] + mainspeed) // 31.25)] == 1 :
+            if my.right < 996 - mainspeed:
+                my.x += mainspeed
+                my.num += pict_change_speed
+                my.image = my_right[int(my.num) % 4]
+            elif allcondition.nowmap%2 == 0 :
+                allcondition.nowmap += 1
+                my.x = my.width/2
+
+
+def pos_update(nowmap = 0 ):
+    move_key_board()
+
+def sound_update() :#声音播放，包括地图音乐和对话音效
+    if (not game.on) or game.preparing or game.confronting:
+        return 
+    if allcondition.makesound :
+        sounds.duihua.set_volume(0.5)
+        sounds.duihua.play()
+        clock.schedule_unique(sounds.duihua.stop, 0.08)
+        allcondition.makesound =False
+
+    if  allcondition.fighting :
+        sounds.mapbgm.stop()
+        allcondition.mapsound =False
+    elif not allcondition.mapsound :
+        sounds.mapbgm.set_volume(0.5)
+        sounds.mapbgm.play()
+        allcondition.mapsound = True
+
+        #sounds.duihua.play()
+    # print(allcondition.makesound)
+
+def act_with_npc():#与npc互动
+    if (not game.on) or game.preparing or game.confronting:
+        return 
+    for i in allmap_info[allcondition.nowmap].actor_npc :
+        if i.collidepoint(my.pos):
+            if  keyboard[keys.RETURN]:
+                allcondition.showfight =True
+                allcondition.fightpos = (i.pos[0]+i.width,i.pos[1])
+                allcondition.fightshuxing = i.shuxing
+                talk.pos = (fight.x,fight.y+fight.height/2+talk.height/2)
+
+
+
+def main_update() :
+    pos_update()
+    act_with_npc()
+    sound_update()
+    pass
+
+for i in allmap_info :
+    allmap_actor.append(Actor(i.name, (500, 281)))
+
+
+#-------------------------------------------------#
+#-------------------------------------------------#
+pgzrun.go()
