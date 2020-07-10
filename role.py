@@ -41,10 +41,15 @@ class Role:
         self.hp = hp + randint(-100, 100)
         self.maxHP = hp
         self.maxMP = mp
+        self.restore_cap = 0
+        self.shrinked = False 
         self.lx, self.ly, self.last_angle = 0, 0, 0
         # self.skills = ['walk']
         self.spinning = False
         self.has_scherm = False
+    def shrink(self):
+        self.ac = Actor('op1bs') 
+        self.shrinked = True 
     def renew(self,hp,mp):
         self.maxHP = hp
         self.maxMP = mp
@@ -104,13 +109,13 @@ class Role:
             if not is_in(self.ac.x, self.ac.y):
                 self.ac.x += mainspeed
             else:
-                self.ac.image = 'op1b'
+                self.ac.image = 'op1b' + ('s' if self.shrinked else '')
         if r:
             self.ac.x += mainspeed
             if not is_in(self.ac.x, self.ac.y):
                 self.ac.x -= mainspeed
             else:
-                self.ac.image = 'op1d'
+                self.ac.image = 'op1d' + ('s' if self.shrinked else '')
 
     def random_walk(self):
         # pass

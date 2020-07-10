@@ -28,7 +28,7 @@ from pgzero.keyboard import keys, Keyboard
 from pgzero.screen import Screen
 keyboard: Keyboard  # 类型标注
 screen: Screen  # 类型标注
-TITLE = '好听的名字呢？？？？'
+TITLE = '好听的名字呢'
 LINE_COLOR = 'gold'
 cur_time = 0.0
 cnt = 0
@@ -97,9 +97,10 @@ def update_confront():
     a = Skill(screen)
     global cur_time
     cur_time = time.time() - start_time
-    # the_one.random_walk() 操控的角色抖动 可用来加大难度
+    if state.shake:
+        the_one.random_walk() # 操控的角色抖动 可用来加大难度
     # 随机出现的屏障
-    if percent(3):
+    if percent(the_one.restore_cap):
         a.scherm(the_one, the_one.pos(), 30)
     for p in opposite:
         p.update()
@@ -325,6 +326,7 @@ def on_mouse_down(pos,button = mouse.RIGHT):
         state.difficulty_level = allcondition.fighthard 
         game.confronting = True 
         state.renew(opposite,this_part) 
+        the_one.shrink()
     elif button == mouse.LEFT  and talk.collidepoint(pos) and allcondition.showtalk==False:
         allcondition.showtalk=True
         allcondition.showfight =False
