@@ -35,16 +35,19 @@ def check_ma_ef(other):
             o.hp -= 1
             o.mp += 1
 def draw_move_ma():
-    ma[0].ac.angle += randint(2,4) 
-    ang = ma[0].ac.angle
+    ma[1].ac.angle += randint(2,8)
+    if percent(3):
+        ma[1].ac.angle += randint(60,120)
+    ma[0].ac.angle += 7
+    ang = ma[1].ac.angle
     dx,dy = 10*sin(ang/180*pi),10*cos(ang/180*pi)
-    dx,dy = dx+randint(-40,40) ,dy + randint(-40,40)
+    dx,dy = dx+randint(-3,3) ,dy + randint(-3,3)
     ma[0].ac.draw() 
     if not is_in(ma[0].ac.pos[0],ma[0].ac.pos[1],True):
         pos = ma[0].ac.pos 
         x,y = pos 
         pos = x - (WIDTH//2),y - HEIGHT//2 
-        ma[0].ac.angle = ((atan(pos[0]/pos[1])*180) + 180) % 360
+        ma[1].ac.angle = ((atan(pos[0]/pos[1])*180) + 180) % 360
         # print(ang)
         ma[0].ac.x,ma[0].ac.y = get_in(ma[0].ac.x,ma[0].ac.y) 
     ma[0].ac.pos = ma[0].ac.x+dx,ma[0].ac.y+dy

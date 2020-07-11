@@ -422,9 +422,10 @@ def on_mouse_down(pos,button = mouse.RIGHT):
         allcondition.fighting =    True
         # print(allcondition.fighthard)
         state.difficulty_level = allcondition.fighthard 
-        state.magic_on = not allcondition.fightshuxing[0]
-        game.confronting = True 
         state.renew(opposite,this_part) 
+        state.magic_on = not allcondition.fightshuxing[0]
+        ma.reverse() 
+        game.confronting = True 
         the_one.renew(state.hp,state.mp) 
         for p in pets:
             p.renew(state.pet_hp,0) 
