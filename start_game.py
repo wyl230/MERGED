@@ -36,6 +36,7 @@ rab_live = True
 state = State()
 start_time = time.time()
 rain = Draw_rain(100, 150)
+confronting_bgm = ['snowdreams','ooo','plv']
 randnums = [randint(100,400) for _ in range(100)]
 randcolors = [choice(COLORS) for i in range(100)]
 randposes = [rand_pos() for _ in range(100)] 
@@ -600,7 +601,7 @@ def sound_update() :#声音播放，包括地图音乐和对话音效
     if game.confronting:
         if not game.playing_bgm:
             print(1)
-            music.play('snowdreams')
+            music.play(choice(confronting_bgm))
             game.playing_bgm = True 
         return 
     if (not game.on) or game.preparing:
