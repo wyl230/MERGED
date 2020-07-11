@@ -42,7 +42,7 @@ def draw_lose(screen, state):
 def draw_win(screen, state):
     choice(bg[1:3]).draw()
     win.draw()
-    screen.draw.text('hp++ mp++', midtop=(222, 444))
+    screen.draw.text('hp++ mp++', midtop=(700,222),fontname='alakob')
     state.hp_up()
     state.mp_up()
     if state.try_get_skill(10):

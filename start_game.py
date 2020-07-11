@@ -37,7 +37,7 @@ state = State()
 start_time = time.time()
 rain = Draw_rain(100, 150)
 confronting_bgm = ['snowdreams','ooo','plv']
-randnums = [randint(100,400) for _ in range(100)]
+randnums = [randint(30,200) for _ in range(222)]
 randcolors = [choice(COLORS) for i in range(100)]
 randposes = [rand_pos() for _ in range(100)] 
 randtexts = [choice(texts) for _ in range(100) ]
@@ -94,7 +94,7 @@ all_actors = [Actor('poke9', rand_pos()), Actor('poke', rand_pos()), Actor('poke
 )), Actor('poke5', rand_pos()), Actor('poke6', rand_pos()), Actor('poke7', rand_pos()), Actor('poke8', rand_pos()), Actor('pokea', rand_pos())]
 the_one = Role(Actor('op1b', rand_pos()),1000,1000, 'YOU')
 this_part = []
-opposite = [Role(Actor('pokemon2s', rand_pos()),1000,1000, 'cute dragonfly')
+opposite = [Role(Actor('pokemon2s', rand_pos()),1000,1000, 'cute dragonfly','heal')
             for _ in range(randint(2, 3))]
 add_opst = [Role(choice(all_actors)) for _ in range(5)]
 opposite.extend(add_opst)
@@ -218,14 +218,15 @@ def draw_preparation(screen):
         WIDTH*3//4, HEIGHT // 5), fontsize=30, color='maroon',fontname='alakob')
 
 def draw_inter(screen):
-    for i in range(8):
+    randn = randnums[:] 
+    for i in range(15):
         x,y = randposes[i]
         x += randint(-3,3)
         y += randint(-3,3) 
         randposes[i] = x,y
-        randnums[i] += randint(-2,4)
-    for i in range(8):
-        screen.draw.filled_circle(randposes[i*(game.level+1)],randnums[i*(game.level+1)],randcolors[i*(game.level+1)]) 
+        randn[i] += randint(-2,4)
+    for i in range(15):
+        screen.draw.filled_circle(randposes[i*(game.level+1)],randn[i*(game.level+1)],randcolors[i*(game.level+1)]) 
     draw_packs() 
 def update_inter():
     pass
@@ -472,7 +473,7 @@ def cnter2():
     global cnt2 
     cnt2 += 1
     randcolors = [choice(COLORS) for i in range(100)]
-    randnums = [randint(50,240) for _ in range(100)]
+    randnums = [randint(50,240) for _ in range(222)]
     randposes = [rand_pos() for _ in range(100)] 
     # print(randcolors)
     print(cnt2) 

@@ -144,6 +144,9 @@ class Role:
     def random_walk(self):
         # pass
         def f(): return randint(-10, 10)
+        if self.skills == 'heal' and percent(20):
+            self.hp += randint(0,1) 
+            self.hp = min(self.hp,self.maxHP)
         if percent(10):
             t = f()
             self.ac.y += t

@@ -25,7 +25,7 @@ from role import *
 from skills import * 
 keyboard: Keyboard  # 类型标注
 screen: Screen  # 类型标注
-pokemons = [Actor(f'{cc}.jpg_no_bgs',rand_pos()) for cc in range(494,514) if cc != 506 and cc != 504] # 504太丑了a
+pokemons = [Actor(f'{cc}.jpg_no_bgs',rand_pos()) for cc in range(494,514) if cc != 506 and cc != 504 and cc != 505] # 504太丑了a
 
 def draw_packs():
     for p in pokemons:
