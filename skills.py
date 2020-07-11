@@ -28,6 +28,7 @@ from skills import *
 keyboard: Keyboard  # 类型标注
 screen: Screen  # 类型标注
 
+scherms = [Actor(f'{cnt}scherm',anchor = (135,165)) for cnt in range(11)]
 class Skill:
     def __init__(self, screen, name='uncertain', consume=1, power=5):
         self.name = name
@@ -41,7 +42,11 @@ class Skill:
         self.screen.draw.filled_circle(rand_pos(), 10, rand_color())
 
     def scherm(self, ac, pos=rand_pos(), power=100):
-        self.screen.draw.filled_circle(pos, 150, 'DarkCyan')
+        # self.screen.draw.filled_circle(pos, 150, 'DarkCyan')
+        for _ in range(4):
+            c = choice(scherms)
+            c.pos = pos 
+            c.draw() 
         ac.hp = min(ac.hp + power, ac.maxHP)
         ac.mp = min(ac.mp + power, ac.maxMP)
 

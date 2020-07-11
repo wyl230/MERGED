@@ -28,7 +28,7 @@ from pgzero.keyboard import keys, Keyboard
 from pgzero.screen import Screen
 keyboard: Keyboard  # 类型标注
 screen: Screen  # 类型标注
-TITLE = '好听的名字呢'
+TITLE = 'P大探险 --- 重温校园'
 LINE_COLOR = 'gold'
 cur_time = 0.0
 cnt = 0
@@ -108,7 +108,7 @@ def flip():
 
 def update_confront():
     global cur_time,TITLE 
-    TITLE = '不用技巧你怎么可能赢呢'
+    TITLE = 'P大探险 --- 不用技巧你怎么可能赢呢'
     a = Skill(screen)
     cur_time = time.time() - start_time 
     if state.shake:
@@ -372,13 +372,13 @@ def draw():
         return
     if game.show_info:
         draw_bdinfo(game.show_info)
-        screen.draw.text('tap space to leave',midtop=(WIDTH//2,10), fontsize=50,color='purple')
+        screen.draw.text('tap space to leave',midtop=(WIDTH//2,10), fontsize=50,color='purple',fontname = FONTen)
         return
     if game.battle_end:
         draw_end_battle() 
         return 
     if game.confronting:
-        TITLE = '学校原来是这个样子的啊'
+        TITLE = 'P大探险 --- 学校原来是这个样子的啊'
         draw_confront()
         update_confront()
         return
