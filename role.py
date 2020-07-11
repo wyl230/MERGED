@@ -98,13 +98,16 @@ class Role:
         e = Effect(self.ac.pos)
         skill.normal(self,other,e,enhanced) 
         pass 
+    def heal(self,H,pre):
+        if H and percent(10):
+            self.hp = min(self.hp+1,self.maxHP)
 
     def set_scherm(self, skill, pos=rand_pos()):
         skill.scherm(pos)
         self.has_scherm = True
 
-    def smooth_walk(self, L, u, d, l, r, B, E, Q,mainspeed = 16):
-        if L:
+    def smooth_walk(self, H, u, d, l, r, B, E, Q,mainspeed = 16):
+        if H:
             # self.ac.x += mainspeed
             self.ac.angle += 1
         if B:

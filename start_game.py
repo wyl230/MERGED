@@ -81,7 +81,9 @@ HEIGHT = 562  # 1000 * 9 // 16
 MIDDLE = WIDTH//2, HEIGHT//2
 start_pic = Actor('gamestart', (1000//2, 562//2))
 
-FONT = 'eunomia_regular'
+FONTzh = 'zh' 
+FONTen = 'alakob'
+FONT3D = '1stenterprises3d'
 
 game = Gameclass()
 all_actors = [Actor('poke9', rand_pos()), Actor('poke', rand_pos()), Actor('poke2', rand_pos()), Actor('poke3', rand_pos()), Actor('poke4', rand_pos(
@@ -117,6 +119,7 @@ def update_confront():
             p, keyboard[keys.K], screen, a, cur_time,cnt2,state)  # False has votex
         the_one.normal_attack(
             p, keyboard[keys.SPACE], screen,a,state.enhanced)  # False has votex
+        the_one.heal(keyboard[keys.H]) 
     for q in this_part:
         q.update()
     if game.show_text and state.has_skills[2]:
@@ -189,22 +192,22 @@ def draw_preparation(screen):
             clicked = True
             if i == 0:
                 screen.draw.text('you will have a more colorful life\n(more powerful when use skills)', midtop=(
-                    WIDTH*2//3, HEIGHT // 10), fontsize=30, color=randcolors[i])
+                    WIDTH*2//3, HEIGHT // 10), fontsize=27,color=randcolors[i],fontname='alakob')
             elif i == 1:
                 screen.draw.text('you will be full of courage to explore your life.\n(the moving speed increased)', midtop=(
-                    WIDTH*2//3, HEIGHT // 2), fontsize=30, color=randcolors[i])
+                    WIDTH*2//3, HEIGHT // 2), fontsize=27, color=randcolors[i],fontname='alakob')
             elif i == 2:
-                screen.draw.text('you will be full of courage to explore your life.\n(the moving speed increased)', midtop=(WIDTH*2//3, 2*HEIGHT // 5), fontsize=30, color =randcolors[i])
+                screen.draw.text('you will be full of courage to explore your life.\n(the moving speed increased)', midtop=(WIDTH*2//3, 2*HEIGHT // 5), fontsize=27, color =randcolors[i],fontname='alakob')
             elif i == 3:
                 screen.draw.text('you will be full of courage to explore your life.\n(the moving speed increased)', midtop=(
-                    WIDTH*3//7, 3*HEIGHT // 5), fontsize=30, color=randcolors[i])
+                    WIDTH*3//7, 3*HEIGHT // 5), fontsize=27, color=randcolors[i],fontname='alakob')
             elif i == 4:
                 screen.draw.text('you will be full of courage to explore your life.\n(the moving speed increased)', midtop=(
-                    WIDTH*5//7, 4*HEIGHT // 5), fontsize=30, color=randcolors[i])
+                    WIDTH*5//7, 4*HEIGHT // 5), fontsize=27, color=randcolors[i],fontname='alakob')
 
             screen.draw.filled_circle(rand_pos(), 10, rand_color())
     screen.draw.text('Please click on the Phalanx on the left.\nYou have three chances.', midtop=(
-        WIDTH*3//4, HEIGHT // 5), fontsize=35, color='maroon')
+        WIDTH*3//4, HEIGHT // 5), fontsize=30, color='maroon',fontname='alakob')
 
 def draw_inter(screen):
     for i in range(8):

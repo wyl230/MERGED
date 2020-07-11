@@ -104,4 +104,4 @@ class Button():
 
     def draw_button(self,fontsizes = 28):
         self.screen.draw.filled_rect(self.rect,self.button_color)
-        self.screen.draw.text(self.msg,self.midtop,fontsize = fontsizes)
+        self.screen.draw.text(self.msg,self.midtop,fontsize = fontsizes,fontname='alakob')
