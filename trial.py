@@ -80,12 +80,16 @@ clock.schedule_interval(f,1.1)
     # 
 # hunt = lambda :a.hunt_effects((0,0),MIDDLE,cur_time)
 def draw():
-    for x in range(1000)[::100]:
-        for y in range(562)[::100]:
-            screen.draw.circle((x,y),5,'red')
-    screen.draw.text('阿斯蒂芬',topright = (555,555),fontname = 'zh')
-    screen.draw.text('adsf',topright = (444,555),fontname = 'alakob')
-    screen.draw.text('adsf',topright = (333,555),fontname = '1stenterprises3d')
+    Actor('pokemon2s',pos=MIDDLE,anchor=(150,44)).draw() 
+    screen.draw.circle(MIDDLE,5,'red')
+    # Actor('pet_',pos=(0,0),anchor=(135,165)).draw() 
+
+    # for x in range(1000)[::100]:
+    #     for y in range(562)[::100]:
+    #         screen.draw.circle((x,y),5,'red')
+    # screen.draw.text('阿斯蒂芬',topright = (555,555),fontname = 'zh')
+    # screen.draw.text('adsf',topright = (444,555),fontname = 'alakob')
+    # screen.draw.text('adsf',topright = (333,555),fontname = '1stenterprises3d')
     # screen.draw.filled_circle(ra)
     # choice(normals).draw()
     # l = [] 

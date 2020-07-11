@@ -37,6 +37,7 @@ class State:
         self.lvl = 1 
         self.times_needed_to_lup = self.lvl**2
         self.hp = 1000
+        self.pet_hp = 5000
         self.mp = 800
         self.shake = False
         self.enhanced = False # 强力的普通攻击 

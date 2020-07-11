@@ -169,10 +169,13 @@ class Role:
     def attack(self, other, atk=1):
         other.hp -= atk
 
-    def if_physical_atk(self, other):
+    def if_physical_atk(self, other,pets = []):
         # if self.ac.collidepoint(other.ac.pos):
         if self.ac.colliderect(other.ac):
             self.attack(other)
+        if percent(1) and percent(1):
+            get_pet(self,pets) 
+
 
     def pos(self):
         return self.ac.pos

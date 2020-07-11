@@ -48,6 +48,7 @@ class Gameclass:
         self.inter = False # temporate
         self.intertime = 1.0 
         # self.inter = True  
+        self.drawhp = True 
         self.level = 0 # 界面层级 非人物等级
         self.time = 0.
         self.score = 0
@@ -94,12 +95,13 @@ all_actors = [Actor('poke9', rand_pos()), Actor('poke', rand_pos()), Actor('poke
 )), Actor('poke5', rand_pos()), Actor('poke6', rand_pos()), Actor('poke7', rand_pos()), Actor('poke8', rand_pos()), Actor('pokea', rand_pos())]
 the_one = Role(Actor('op1b', rand_pos()),1000,1000, 'YOU')
 this_part = []
-opposite = [Role(Actor('pokemon2s', rand_pos()),1000,1000, 'cute dragonfly','heal')
+opposite = [Role(Actor('pokemon2s', rand_pos(),anchor=(150,44)),1000,1000, 'cute dragonfly','heal')
             for _ in range(randint(2, 3))]
 add_opst = [Role(choice(all_actors)) for _ in range(10)]
 opposite.extend(add_opst)
 # ef1 = Effect()
 
+get_pet(opposite[0],pets)
 
 def flip():
     game.inter = not game.inter
@@ -108,7 +110,7 @@ def update_confront():
     global cur_time,TITLE 
     TITLE = '不用技巧你怎么可能赢呢'
     a = Skill(screen)
-    cur_time = time.time() - start_time
+    cur_time = time.time() - start_time 
     if state.shake:
         the_one.random_walk() # 操控的角色抖动 可用来加大难度
     # 随机出现的屏障
@@ -116,7 +118,7 @@ def update_confront():
         a.scherm(the_one, the_one.pos(), 30)
     for p in opposite:
         p.update()
-        p.if_physical_atk(the_one)
+        p.if_physical_atk(the_one,pets)
         the_one.release_attack(p, keyboard[keys.Q], screen,state)
         the_one.drift_attack(
             p, keyboard[keys.J], screen, a, cur_time,cnt2,state, False)  # False has votex
@@ -129,8 +131,15 @@ def update_confront():
             opposite[-1].normal_attack(the_one,percent(3),screen,a,False)
         if state.difficulty_level == 2 and percent(50) and len(opposite) >= 2:
             opposite[-2].normal_attack(the_one,percent(3),screen,a,percent(50))
-        
         the_one.heal(keyboard[keys.H],screen) 
+    for p in pets:
+        p.update() 
+        for q in opposite:
+            p.normal_attack(q,percent(3),screen,a,percent(20)) 
+            # q.release_attack(q,percent(3),screen,state) 
+            if p.ac.colliderect(q.ac):
+                p.hp -= 1
+                q.hp -= 1 
     for q in this_part:
         q.update()
     if game.show_text and state.has_skills[2]:
@@ -154,10 +163,13 @@ def update_confront():
     sound_update()
 
 def check_death():
-    global opposite
+    global opposite,pets
     for p in opposite:
         if p.hp <= 0:
             opposite.remove(p)
+    for p in pets:
+        if p.hp <= 0:
+            pets.remove(p) 
     if the_one.hp < 0:
         screen.draw.text('you lose', midtop=rand_pos())
         # sleep(1)
@@ -265,25 +277,32 @@ def update(dt):
 
 
 def draw_info(screen):
-    cur_row = 0
-    btn = Button(screen, f'HP : {the_one.hp}', (0, 0), the_one.hp, 22)
-    btn.draw_button()
-    cur_row += 23
-    btn = Button(screen, f'MP : {the_one.mp}',
-                 (0, cur_row), the_one.mp, 22)
-    btn.draw_button()
-    cur_row += 13
-    for p in opposite:
-        cur_row += 18
-        btn2 = Button(
-            screen, f'{p.name}[{cur_row//25}] hp = {p.hp}', (0, cur_row), p.hp/6, 15)
-        btn2.draw_button(15)
+    if game.drawhp:
+        cur_row = 0
+        btn = Button(screen, f'HP : {the_one.hp}', (0, 0), the_one.hp, 22)
+        btn.draw_button()
+        cur_row += 23
+        btn = Button(screen, f'MP : {the_one.mp}',
+                    (0, cur_row), the_one.mp, 22)
+        btn.draw_button()
+        cur_row += 13
+        for p in opposite:
+            cur_row += 18
+            btn2 = Button(
+                screen, f'{p.name}[{cur_row//25}] hp = {p.hp}', (0, cur_row), p.hp/6, 15)
+            btn2.draw_button(15)
     screen.draw.text(f'{int(cur_time)}s',topright=(WIDTH,0))
     screen.draw.text(f'level {state.lvl}',topright=(WIDTH,30))
     if state.shake:
         screen.draw.text('战栗模式',topright = (WIDTH,60),fontname = FONTzh)
     if state.pack_distraction:
         screen.draw.text('pack distraction mode',topright=(WIDTH,90),fontname = 'zh')
+    cnt = 90
+    for p in pets:
+        cnt += 30 
+        screen.draw.text(f'宠物数量：{len(pets)} ',topright=(WIDTH,cnt),fontname = 'zh')
+        cnt += 30
+        screen.draw.text(f'HP:{p.hp}',topleft=(WIDTH - 100,cnt),fontname = 'zh')
 def draw_confront():
     bg = confront_BackGround(Actor('bg6'))
     # bg = confront_BackGround(Actor('confrontbg4a'),Actor('confrontbg4b'))
@@ -295,6 +314,11 @@ def draw_confront():
     for p in opposite + this_part:
         p.draw()
         p.random_walk()
+    for p in pets:
+        p.random_walk
+        Actor('pet_',pos=p.ac.pos,anchor=(135,165)).draw() 
+        p.draw() 
+        # Actor('pet_',pos=p.ac.pos,anchor=(200,100)).draw() 
     if game.raining and state.has_skills[4]:
         rain.draw_rain(screen)
     draw_info(screen)
@@ -309,7 +333,6 @@ def draw_start(screen):
         # screen.draw.text(f'wyl{pos}',midtop = pos)
         screen.draw.text(f'{randtexts[i]}',midtop = pos,color = randcolors[i+2])
     start_pic.draw()
-    # texts = []
     text = Actor('text1s',midtop = (WIDTH//2+120,HEIGHT//5-99),anchor=(99,99))
     text2 = Actor('text2',bottomleft=(0,HEIGHT) ,anchor=(99,99))
     text3 = Actor('text3',bottomright = (WIDTH,HEIGHT),anchor=(99,99))
@@ -403,6 +426,8 @@ def on_mouse_down(pos,button = mouse.RIGHT):
         game.confronting = True 
         state.renew(opposite,this_part) 
         the_one.renew(state.hp,state.mp) 
+        for p in pets:
+            p.renew(state.pet_hp,0) 
         the_one.shrink(state)
         if not game.inter:
             game.inter = True
@@ -448,6 +473,9 @@ def on_key_down(key):
         confront_one_key_down(key)
         if key == keys.J and the_one.mp >= 100:
             game.raining = True
+        # if key == keys.LSHIFT or key == keys.RSHIFT:
+        if key == keys.RCTRL or key == keys.LCTRL:
+            game.drawhp = not game.drawhp 
         return
     if game.battle_end:
         if key == keys.SPACE:
