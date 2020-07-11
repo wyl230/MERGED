@@ -98,8 +98,8 @@ class Role:
         e = Effect(self.ac.pos)
         skill.normal(self,other,e,enhanced) 
         pass 
-    def heal(self,H,pre):
-        if H and percent(10):
+    def heal(self,H,pre = 10):
+        if H and percent(pre):
             self.hp = min(self.hp+1,self.maxHP)
 
     def set_scherm(self, skill, pos=rand_pos()):
