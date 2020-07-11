@@ -275,7 +275,11 @@ def draw_info(screen):
         btn2.draw_button(15)
     screen.draw.text(f'{int(cur_time)}s',topright=(WIDTH,0))
     screen.draw.text(f'level {state.lvl}',topright=(WIDTH,30))
-
+    if state.shake:
+        # screen.draw.text('战栗模式',topright=(WIDTH,60)，fontname = 'zh')
+        screen.draw.text('战栗模式',topright = (WIDTH,60),fontname = FONTzh)
+    if state.pack_distraction:
+        screen.draw.text('pack distraction mode',topright=(WIDTH,90),fontname = 'zh')
 def draw_confront():
     bg = confront_BackGround(Actor('bg6'))
     # bg = confront_BackGround(Actor('confrontbg4a'),Actor('confrontbg4b'))
