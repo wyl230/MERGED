@@ -7,6 +7,7 @@ class dialogue :
 alldialogue = []
 firstdia = [ ]
 pos = (500,510)
+alldialogue.append([Actor('j01',pos),Actor('j02',pos)])
 firstdia.append(Actor('a01',pos))
 firstdia.append(Actor('a02',pos))
 firstdia.append(Actor('a03',pos))

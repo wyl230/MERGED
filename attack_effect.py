@@ -58,6 +58,7 @@ class Effect:
             for i in nor:
                 if i.colliderect(other.ac):
                     other.hp -= 1
+                    me.mp += 2 
             return
         me.mp -= 1
         t = choice(normals)

@@ -60,7 +60,7 @@ class State:
         self.hp += randint(1, 5) * self.hp//44 * (self.difficulty_level+1)
 
     def mp_up(self):
-        self.mp = randint(1, 4) * self.mp//54
+        self.mp += randint(1, 4) * self.mp//54 
 
     def try_get_skill(self, chances=10):
         if percent(chances):

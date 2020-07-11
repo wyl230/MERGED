@@ -14,8 +14,8 @@ from rainstorm import *
 from button import *
 from pgzero.actor import Actor
 from pgzero.loaders import sounds
-from pgzero.keyboard import keys
-from pgzero.rect import Rect, ZRect
+from pgzero.keyboard import keys 
+from pgzero.rect import Rect, ZRect 
 from pgzero.loaders import sounds, images
 from pgzero import music, tone
 from pgzero.clock import clock
@@ -105,8 +105,9 @@ def flip():
     game.inter = not game.inter
 
 def update_confront():
+    global cur_time,TITLE 
+    TITLE = '不用技巧你怎么可能赢呢'
     a = Skill(screen)
-    global cur_time
     cur_time = time.time() - start_time
     if state.shake:
         the_one.random_walk() # 操控的角色抖动 可用来加大难度
@@ -346,7 +347,7 @@ def draw():
         draw_end_battle() 
         return 
     if game.confronting:
-        TITLE = '未名湖就是这个样子的'
+        TITLE = '学校原来是这个样子的啊'
         draw_confront()
         update_confront()
         return
@@ -393,7 +394,7 @@ def on_mouse_down(pos,button = mouse.RIGHT):
         state.magic_on = not allcondition.fightshuxing[0]
         game.confronting = True 
         state.renew(opposite,this_part) 
-        the_one.renew(the_one.maxHP,the_one.maxMP) 
+        the_one.renew(state.hp,state.mp) 
         the_one.shrink(state)
         if not game.inter:
             game.inter = True
@@ -443,6 +444,9 @@ def on_key_down(key):
     if game.battle_end:
         if key == keys.SPACE:
             game.battle_end = False 
+            # 更新
+            state.hp_up()
+            state.mp_up()
             game.on = True # temporary
 
 
