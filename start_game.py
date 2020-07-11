@@ -604,6 +604,7 @@ def move_key_board ():#主地图中的按键检测
 #         my.angle += 0.3
         game.show_info = 0
     if keyboard[keys.UP]:
+        my.image = 'up1'
         if allmap_info[nowmap].bool_go[int((my.center[1] - mainspeed) // 31.25)][int(my.center[0] // 31.25)] == 1 :
             if my.top > mainspeed:
                 my.y -= mainspeed
@@ -614,6 +615,7 @@ def move_key_board ():#主地图中的按键检测
         else:
             iftrans()
     elif keyboard[keys.DOWN]:
+        my.image = 'down1'
         if allmap_info[nowmap].bool_go[int((my.top + my.height + mainspeed) // 31.25)][int(my.center[0] // 31.25)] == 1 :
             if    my.bottom < 557 - mainspeed:
                 my.y += mainspeed
@@ -624,6 +626,7 @@ def move_key_board ():#主地图中的按键检测
         else:
            iftrans()
     elif keyboard[keys.LEFT]:
+        my.image = 'left1'
         if allmap_info[nowmap].bool_go[int((my.center[1]) // 31.25)][int(abs((my.left - mainspeed) )// 31.25)] == 1 :
             if  my.left > mainspeed:
                 my.x -= mainspeed
@@ -634,7 +637,8 @@ def move_key_board ():#主地图中的按键检测
         else:
             iftrans()
     elif keyboard[keys.RIGHT]:
-        if allmap_info[nowmap].bool_go[int((my.center[1]) // 31.25)][int((my.center[0] + mainspeed) // 31.25)] == 1 :
+        my.image = 'right1'
+        if allmap_info[nowmap].bool_go[int((my.center[1]) // 31.25)][int((my.right + mainspeed) // 31.25)] == 1 :
             if my.right < 996 - mainspeed:
                 my.x += mainspeed
                 my.num += pict_change_speed
@@ -681,7 +685,7 @@ def act_with_npc():#与npc互动
     if (not game.on) or game.preparing or game.confronting:
         return 
     for i in allmap_info[allcondition.nowmap].actor_npc :
-        if i.collidepoint(my.pos):
+        if isact_with_npc(i):
             if  keyboard[keys.RETURN]:
                 allcondition.showfight =True
                 allcondition.fightpos = (i.pos[0]+i.width,i.pos[1])
@@ -690,7 +694,24 @@ def act_with_npc():#与npc互动
                 temp = allcondition.fighthard
                 talk.pos = (fight[temp].x,fight[temp].y+fight[temp].height/2+talk.height/2)
 
-
+def isact_with_npc(actor_):
+    mainspeed = 4
+    if my.image[0] == 'd':
+        if (int((my.top + my.height + mainspeed) // 31.25),int(my.center[0] // 31.25)) in actor_.gdpos:
+            return True
+        return False
+    if my.image[0] == 'u':
+        if (int((my.center[1] - mainspeed) // 31.25),int(my.center[0] // 31.25)) in actor_.gdpos:             
+            return True
+        return False
+    if my.image[0] == 'l':
+        if (int((my.center[1]) // 31.25),int(abs((my.left - mainspeed) )// 31.25)) in actor_.gdpos:
+            return True
+        return False
+    if my.image[0] == 'r':
+        if (int((my.center[1]) // 31.25),int((my.right + mainspeed) // 31.25)) in actor_.gdpos:
+            return True
+        return False
 
 def main_update() :
     pos_update()

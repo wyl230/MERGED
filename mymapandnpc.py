@@ -62,7 +62,7 @@ allmap_info[10].actor_gaoshi.update({(22,8):Actor("jiashulou1",(22.5*31.25,8.5*3
 allmap_info[11].actor_gaoshi.update({(12,2):Actor("xiaojingting1",(12.5*31.25,2.5*31.25))})
 allmap_info[11].actor_gaoshi.update({(11,8):Actor("honghu",(11.5*31.25,8.5*31.25))})
 allmap_info[11].actor_gaoshi.update({(19,11):Actor("kaogulou",(19.5*31.25,11.5*31.25))})
-allmap_info[5].actor_npc.append(mynpc("npc1",(400,500),[True],0)) # name pos shuxing hard 
+allmap_info[5].actor_npc.append(mynpc("npc1",(400,500),[True],0)) # name pos shuxing hard  
 allmap_info[5].actor_npc.append(mynpc("npc2",(700,520),[False],1))
 allmap_info[5].actor_npc.append(mynpc("npc3",(80,140),[False],2))
 allmap_info[3].actor_npc.append(mynpc("npc4",(80,13.5*31.25),[False],0))
@@ -348,3 +348,12 @@ allmap_info[10].trans = {(12,17):8,(13,17):8,(28,17):1,(29,17):1}
 allmap_info[11].trans = {(21,17):0,(22,17):0,(23,17):0,(31,7):8,(31,8):8,(31,9):8}
 
 gdsize = 31.25
+
+for i in range(12):
+    for npc in allmap_info[i].actor_npc:
+        npcgdx = int(npc.pos[0] // 31.25)
+        npcgdy = int(npc.pos[1] // 31.25)
+        allmap_info[i].bool_go[npcgdy][npcgdx] = 0
+        allmap_info[i].bool_go[npcgdy-1][npcgdx] = 0
+        npc.pos = ((npcgdx+0.5)*31.25,npcgdy*31.25)
+        npc.gdpos = ((npcgdy,npcgdx),(npcgdy-1,npcgdx))
