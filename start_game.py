@@ -390,6 +390,7 @@ def on_mouse_down(pos,button = mouse.RIGHT):
         allcondition.fighting =    True
         # print(allcondition.fighthard)
         state.difficulty_level = allcondition.fighthard 
+        state.magic_on = not allcondition.fightshuxing[0]
         game.confronting = True 
         state.renew(opposite,this_part) 
         the_one.renew(the_one.maxHP,the_one.maxMP) 
