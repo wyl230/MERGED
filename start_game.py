@@ -505,6 +505,7 @@ class condition:
         self.mapsound =False#是否发出地图声音
         self.mousepos = (-100,-100)#鼠标坐标
         self.fighthard = 0
+        self.whichtalk = 0
 allcondition = condition()
 class myself(Actor) :
     __slots__ = (
@@ -531,7 +532,8 @@ def draw_fightandtalk ():#画对战，对话的选择框
         talk.draw()
 def draw_talk_dialogue():#画具体的对话
     if allcondition.showtalk == 1:
-        allcondition.out = choice(alldialogue)
+        allcondition.out = alldialogue[allcondition.whichtalk]
+        allcondition.whichtalk = (allcondition.whichtalk + 1) % len(alldialogue)
         allcondition.showtalk = 2
     if allcondition.showtalk == 2:  # 如果开始对话
         if allcondition.talknum < len(allcondition.out):  # 如果对话还没有结束
