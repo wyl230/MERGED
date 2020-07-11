@@ -41,7 +41,8 @@ randnums = [randint(30,200) for _ in range(222)]
 randcolors = [choice(COLORS) for i in range(100)]
 randposes = [rand_pos() for _ in range(100)] 
 randtexts = [choice(texts) for _ in range(100) ]
-
+directions = Actor('dir',anchor=(0,0),topleft = (98,0))
+music.play(choice(confronting_bgm)) 
 
 class Gameclass:
     def __init__(self):
@@ -49,6 +50,7 @@ class Gameclass:
         self.intertime = 1.0 
         # self.inter = True  
         self.drawhp = True 
+        self.direction = False 
         self.level = 0 # 界面层级 非人物等级
         self.time = 0.
         self.score = 0
@@ -70,6 +72,7 @@ class Gameclass:
         self.confronting = False
         self.raining = False
         self.playing_bgm = False
+        # self.playing_bgm = 
         self.playing_special_effect = [0 for _ in range(7)]
         # self.confronting = True
         self.show_info = ''
@@ -85,7 +88,6 @@ WIDTH = 1000
 HEIGHT = 562  # 1000 * 9 // 16
 MIDDLE = WIDTH//2, HEIGHT//2
 start_pic = Actor('gamestart', (1000//2, 562//2))
-
 FONTzh = 'zh' 
 FONTen = 'alakob'
 FONT3D = '1stenterprises3d'
@@ -242,6 +244,7 @@ def draw_preparation(screen):
             # screen.draw.filled_circle(rand_pos(), 10, rand_color())
     screen.draw.text('Please click on the Phalanx on the left.\nYou have three chances.', midtop=(
         WIDTH*3//4, HEIGHT // 5), fontsize=30, color='maroon',fontname='alakob')
+    screen.draw.text('操作说明',topleft = (0,0) ,fontsize = 30,fontname = FONTzh)
 
 def draw_inter(screen):
     randn = randnums[:] 
@@ -359,6 +362,11 @@ def draw():
     if game.inter:
         draw_inter(screen)
         return 
+    if game.direction:
+        TITLE = '方向键查看 任意其他键或者点击鼠标退出'
+        screen.draw.filled_circle(MIDDLE,1888,'white')
+        directions.draw() 
+        return 
     if not game.on:
         draw_start(screen)
         draw_stars(screen)
@@ -399,13 +407,19 @@ def on_mouse_down(pos,button = mouse.RIGHT):
                 game.inter = True 
                 clock.schedule(flip,game.intertime)
         return
+    if game.direction:
+        game.direction = False 
     if game.preparing:
+        if pos[0] <= 200 and pos[1]<=50:
+            game.direction = True 
+            return 
         if game.click_cnt >= 3:
             if game.level == 0:
                 game.inter = True 
                 clock.schedule(flip,game.intertime)
                 game.level = 1
             game.preparing = False
+            music.stop()
             return
         for v in vortex:
             if v.collidepoint(pos):
@@ -470,6 +484,13 @@ def confront_one_key_down(key):
 
 
 def on_key_down(key):
+    if game.direction:
+        if key == keys.DOWN:
+            directions.y -= 100
+        elif key == keys.UP:
+            directions.y += 100
+        else:
+            game.direction = False 
     if game.confronting:
         confront_one_key_down(key)
         if key == keys.J and the_one.mp >= 100:
@@ -584,6 +605,9 @@ def draw_talk_dialogue():#画具体的对话
             allcondition.showtalk = 0
             allcondition.talknum = 0
 def main_draw():
+    global TITLE
+    TITLE = 'P大探险 --- 学校原来是这个样子的啊'
+
     screen.clear()
     allmap_actor[allcondition.nowmap].draw()#画地图
     draw_npc()#画npc

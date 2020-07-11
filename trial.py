@@ -82,7 +82,10 @@ ebrandnums = [randint(506,529) for _ in range(100)]
 # hunt = lambda :a.hunt_effects((0,0),MIDDLE,cur_time)
 loses = [Actor('lose', anchor=(50, 100)),Actor('lose2',(950,250))]
 def draw():
-    Actor(f'{ebrandnums[0]} (定制)').draw() 
+    screen.draw.filled_circle(MIDDLE,1888,'white')
+    Actor('dir',anchor=(0,0),topleft = (98,0)).draw() 
+    # Actor(f'{ebrandnums[0]} (定制)').draw() 
+
     # loses[1].angle = -30
     # for lose in loses:
         # lose.draw()
