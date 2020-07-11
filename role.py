@@ -98,6 +98,8 @@ class Role:
         # pass
 
     def normal_attack(self,other,SPACE,screen,skill,enhanced,consume = 0):
+        if not self.name == 'YOU':
+            return 
         if not SPACE :
             return 
         e = Effect(self.ac.pos)
