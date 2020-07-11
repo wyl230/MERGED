@@ -48,6 +48,10 @@ class State:
         self.purification_capacity = 2
         self.speed = 30
     def renew(self,opposite,this_part):
+        self.shake = False
+        self.magic_on = False # temporate
+        self.pack_distraction = False
+        
         self.speed = cur_speed[self.difficulty_level] 
         for i in opposite:
             i.renew(1000 + self.difficulty_level*500,1000 + self.difficulty_level*500)
