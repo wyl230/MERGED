@@ -362,6 +362,7 @@ def on_mouse_down(pos,button = mouse.RIGHT):
         state.difficulty_level = allcondition.fighthard 
         game.confronting = True 
         state.renew(opposite,this_part) 
+        the_one.renew(the_one.maxHP,the_one.maxMP) 
         the_one.shrink(state)
         if not game.inter:
             game.inter = True
