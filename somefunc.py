@@ -34,8 +34,10 @@ u_color = [u.lower() for u in u_color]
 def percent(x):
     return randint(1, 100) < x
 
+
 def flip(game):
     game.inter = False
+
 
 def cal_dist(f, t):
     a = np.array(f)
@@ -48,8 +50,17 @@ def elapse_pos(t, p=100, q=10):
 # gap 越小 越冒险 攻击力越强
 
 
-def around_pos(pos, gap=50):
-    def f(): return randint(-311, 311)
+def inpos(pos, gap=30):
+    def f(): return randint(-100, 100)
+    x, y = map(int, pos)
+    dx,dy = f(),f() 
+    return [(i, j) for i in range((x-dx),(x+dx))[::gap]
+            for j in range((y-dy),(y+dy))[::gap] # if i*i + j*j <= 10000
+            ]
+
+
+def around_pos(pos, gap=50, l=333):
+    def f(): return randint(-l, l)
     x, y = map(int, pos)
     return [(i, j) for i in range(min(x+f(), x + f()), max(x + f(), x + f()))[::gap]
             for j in range((min(y+f(), y + f())), (max(y + f(), y + f())))[::gap]
@@ -74,7 +85,7 @@ def swing(*a):
 
 
 def is_in(x, y):
-    return -100 < x < WIDTH + 150 and -150 < y < HEIGHT + 150 
+    return -100 < x < WIDTH + 150 and -150 < y < HEIGHT + 150
     return 0 < x < WIDTH and 0 < y < HEIGHT
 
 # def change_v(*ac):

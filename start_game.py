@@ -124,7 +124,7 @@ def update_confront():
         the_one.normal_attack(
             p, keyboard[keys.SPACE], screen,a,state.enhanced)  # False has votex
             
-        the_one.heal(keyboard[keys.H]) 
+        the_one.heal(keyboard[keys.H],screen) 
     for q in this_part:
         q.update()
     if game.show_text and state.has_skills[2]:
@@ -293,13 +293,14 @@ def draw_start(screen):
     start_pic.draw()
     # texts = []
     text = Actor('text1s',midtop = (WIDTH//2+120,HEIGHT//5-99),anchor=(99,99))
-    text2 = Actor('text2',midtop = randposes[10],anchor=(99,99))
-    text3 = Actor('text3',midtop = randposes[22],anchor=(99,99))
+    text2 = Actor('text2',bottomleft=(0,HEIGHT) ,anchor=(99,99))
+    text3 = Actor('text3',bottomright = (WIDTH,HEIGHT),anchor=(99,99))
     if cnt % 2:
         text.angle += randint(-3,3) 
     texts = [text,text2,text3]
     for t in texts:
         t.draw() 
+    screen.draw.text('trick mode',topleft = (0,0) ,fontsize = 30,fontname = FONT3D)
 
 def draw_end_battle():
     if game.win_battle:
@@ -346,11 +347,11 @@ def on_mouse_down(pos,button = mouse.RIGHT):
     global vortex,vortexs
     print(f"you just click{pos}")
     if not game.on:
-        if pos[0] < 100:
+        if pos[0] <= 170 and pos[1]<=50:
             state.has_skills = [True for _ in range(7)] 
             the_one.restore_cap = 3 
             state.enhanced = True 
-        if start_pic.collidepoint(pos):
+        if start_pic.collidepoint(pos) or (pos[0] <= 170 and pos[1]<=50):
             game.preparing = True
             game.on = True
             if not game.inter:

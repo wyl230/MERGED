@@ -24,6 +24,8 @@ when game.confronting is True, goto the confronting interface
 
 6. 点击建筑物前标志显示建筑名称 
 
+7. 可进去建筑物进行探索  
+
    待完善： 1.地图数量以及地图间移动 2.npc数量以及位置，以及npc的战斗属性
 
 ### 游戏说明：

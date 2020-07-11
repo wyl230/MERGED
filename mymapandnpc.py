@@ -62,7 +62,7 @@ allmap_info[10].actor_gaoshi.update({(22,8):Actor("jiashulou1",(22.5*31.25,8.5*3
 allmap_info[11].actor_gaoshi.update({(12,2):Actor("xiaojingting1",(12.5*31.25,2.5*31.25))})
 allmap_info[11].actor_gaoshi.update({(11,8):Actor("honghu",(11.5*31.25,8.5*31.25))})
 allmap_info[11].actor_gaoshi.update({(19,11):Actor("kaogulou",(19.5*31.25,11.5*31.25))})
-allmap_info[5].actor_npc.append(mynpc("npc1",(400,500),1,0))
+allmap_info[5].actor_npc.append(mynpc("npc1",(400,500),1,0)) # name pos shuxing hard 
 allmap_info[5].actor_npc.append(mynpc("npc2",(700,520),1,1))
 allmap_info[5].actor_npc.append(mynpc("npc3",(80,140),1,2))
 allmap_info[3].actor_npc.append(mynpc("npc4",(80,13.5*31.25),1,0))

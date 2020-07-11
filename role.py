@@ -4,6 +4,7 @@ import pgzrun
 # import globalValues
 from math import *
 from random import *
+from button import *
 from somefunc import *
 from attack_effect import *
 from pgzero.actor import Actor
@@ -26,6 +27,7 @@ from pgzero.screen import Screen
 keyboard: Keyboard  # 类型标注
 screen: Screen  # 类型标注
 
+role_randcolors = [choice(COLORS) for i in range(100)]
 
 class Pet:
     def __init__(self, ac):
@@ -99,10 +101,12 @@ class Role:
         e = Effect(self.ac.pos)
         skill.normal(self,other,e,enhanced) 
         sounds.eletric.play()
-    def heal(self,H,pre = 10):
+    def heal(self,H,screen,pre = 10):
         if H and percent(pre):
             self.hp = min(self.hp+1,self.maxHP)
             sounds.heal.play() 
+            for p in inpos(self.ac.pos):
+                screen.draw.circle(p,5,choice(role_randcolors))  
 
     def set_scherm(self, skill, pos=rand_pos()):
         skill.scherm(pos)
