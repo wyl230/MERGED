@@ -67,6 +67,8 @@ class Gameclass:
         self.on = False
         self.confronting = False
         self.raining = False
+        self.playing_bgm = False
+        self.playing_special_effect = [0 for _ in range(7)]
         # self.confronting = True
 
     def reset(self):
@@ -119,6 +121,7 @@ def update_confront():
             p, keyboard[keys.K], screen, a, cur_time,cnt2,state)  # False has votex
         the_one.normal_attack(
             p, keyboard[keys.SPACE], screen,a,state.enhanced)  # False has votex
+            
         the_one.heal(keyboard[keys.H]) 
     for q in this_part:
         q.update()
@@ -132,7 +135,7 @@ def update_confront():
     check_death()
     if state.pack_distraction:
         draw_packs() 
-
+    sound_update()
 
 def check_death():
     global opposite
@@ -568,16 +571,23 @@ def pos_update(nowmap = 0 ):
     move_key_board()
 
 def sound_update() :#声音播放，包括地图音乐和对话音效
-    if (not game.on) or game.preparing or game.confronting:
+    if game.confronting:
+        if not game.playing_bgm:
+            print(1)
+            music.play('snowdreams')
+            game.playing_bgm = True 
+        return 
+    if (not game.on) or game.preparing:
         return 
     if allcondition.makesound :
         sounds.duihua.set_volume(0.5)
         sounds.duihua.play()
         clock.schedule_unique(sounds.duihua.stop, 0.08)
-        allcondition.makesound =False
+        allcondition.makesound = False
 
     #if  allcondition.fighting :
      #   sounds.mapbgm.stop()
+
       #  allcondition.mapsound =False
     if not music.is_playing('mapbgm') :
 

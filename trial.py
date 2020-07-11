@@ -14,7 +14,7 @@ from pgzero.rect import Rect
 from pgzero.keyboard import keys
 screen: Screen  # 类型标注
 TITLE = 'undetermined'
-FONT = 'cmb10'
+FONT = 'zh'
 print(u_color)
 WIDTH = 800 
 HEIGHT = 600 
@@ -48,6 +48,8 @@ def f():
     cnt += 1  
 # a = Effect() 
 a = Effect(rand_pos()) 
+# music.set_volume(0.5)
+music.play('snowdreams')
 def update(dt):
     global cur_time 
     screen.clear() 

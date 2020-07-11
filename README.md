@@ -44,6 +44,7 @@ when game.confronting is True, goto the confronting interface
 4. purification 2
 5. shrink 0
 6. scherm 5 角色自身的特性 其他对象也可能具有  和某个NPC对话之后获得 之后通过战斗这个能力会增强
+7. eletric 6
 
 
 
