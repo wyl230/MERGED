@@ -70,6 +70,7 @@ class Gameclass:
         self.playing_bgm = False
         self.playing_special_effect = [0 for _ in range(7)]
         # self.confronting = True
+        self.show_info = ''
 
     def reset(self):
         pass
@@ -155,6 +156,8 @@ def check_death():
         # game.on = False
         game.on = True  # temporary
         the_one.hp = 1000
+        music.stop() 
+        game.playing_bgm = False 
     elif not opposite:
         print('you win')
         game.confronting = False
@@ -167,7 +170,8 @@ def check_death():
                     for _ in range(randint(3, 5))]
         add_opst = [Role(choice(all_actors)) for _ in range(3)]
         opposite.extend(add_opst)
-
+        music.stop()
+        game.playing_bgm = False 
 
 def draw_main_info():
     pass
@@ -300,7 +304,12 @@ def draw_end_battle():
     if game.win_battle:
         eb.draw_win(screen,state)
     else:
-        eb.draw_lose(screen,state) 
+        eb.draw_lose(screen,state)
+        
+def draw_bdinfo(bdstr):
+    global ndiaoyong
+    Actor(bdstr,(500,281)).draw()
+
 def draw():
     global TITLE
     screen.clear()
@@ -317,6 +326,10 @@ def draw():
     if game.preparing:
         draw_preparation(screen)
         draw_stars(screen)
+        return
+    if game.show_info:
+        draw_bdinfo(game.show_info)
+        screen.draw.text('tap space to leave',midtop=(WIDTH//2,10), fontsize=50,color='purple')
         return
     if game.battle_end:
         draw_end_battle() 
@@ -358,7 +371,7 @@ def on_mouse_down(pos,button = mouse.RIGHT):
         return 
     allcondition.mousepos = pos
     allcondition.fighting = False
-    if button == mouse.LEFT and allcondition.showtalk==True:
+    if button == mouse.LEFT and allcondition.showtalk==2:
         allcondition.talknum += 1
         allcondition.makesound = True
     elif button == mouse.LEFT  and fight[allcondition.fighthard].collidepoint(pos):
@@ -373,8 +386,8 @@ def on_mouse_down(pos,button = mouse.RIGHT):
         if not game.inter:
             game.inter = True
             clock.schedule(flip,game.intertime) 
-    elif button == mouse.LEFT  and talk.collidepoint(pos) and allcondition.showtalk==False:
-        allcondition.showtalk=True
+    elif button == mouse.LEFT  and talk.collidepoint(pos) and allcondition.showtalk==0:
+        allcondition.showtalk=1
         allcondition.showfight =False
     #
 
@@ -471,7 +484,7 @@ class condition:
         self.fightpos = (1, 1)#对战对话的选择框出现位置
         #self.contin = True#
         self.showfight = False#是否显示对战对话框的位置
-        self.showtalk = False#是否正在对话
+        self.showtalk = 0#是否正在对话
         self.fightshuxing = 1#和玩家对战的npc的属性
         self.nowmap = 5#现在显示的地图编号
         self.talknum = 0#正在进行的对话
@@ -505,12 +518,14 @@ def draw_fightandtalk ():#画对战，对话的选择框
         fight[allcondition.fighthard].draw()
         talk.draw()
 def draw_talk_dialogue():#画具体的对话
-    if allcondition.showtalk ==1:   #如果开始对话
-        out = choice(alldialogue)
-        if allcondition.talknum <len(out):#如果对话还没有结束
-            out [allcondition.talknum].draw()
+    if allcondition.showtalk == 1:
+        allcondition.out = choice(alldialogue)
+        allcondition.showtalk = 2
+    if allcondition.showtalk == 2:  # 如果开始对话
+        if allcondition.talknum < len(allcondition.out):  # 如果对话还没有结束
+            allcondition.out[allcondition.talknum].draw()
             clock.schedule_unique(sounds.duihua.stop, 1.0)
-        else :#对话结束重置状态
+        else:  # 对话结束重置状态
             allcondition.showtalk = 0
             allcondition.talknum = 0
 def main_draw():
@@ -532,7 +547,8 @@ def move_key_board ():#主地图中的按键检测
     pict_change_speed = 0.15  # 人物图像的变换速率
     mainspeed = 4
     if keyboard[keys.SPACE]:
-        my.angle += 0.3
+#         my.angle += 0.3
+        game.show_info = 0
     if keyboard[keys.UP]:
         if allmap_info[nowmap].bool_go[int((my.center[1] - mainspeed) // 31.25)][int(my.center[0] // 31.25)] == 1 :
             if my.top > mainspeed:
@@ -540,7 +556,9 @@ def move_key_board ():#主地图中的按键检测
                 my.num += pict_change_speed
                 my.image = my_up[int(my.num) % 4]
             else:
-               iftrans()
+                iftrans()
+        else:
+            iftrans()
     elif keyboard[keys.DOWN]:
         if allmap_info[nowmap].bool_go[int((my.top + my.height + mainspeed) // 31.25)][int(my.center[0] // 31.25)] == 1 :
             if    my.bottom < 557 - mainspeed:
@@ -548,7 +566,9 @@ def move_key_board ():#主地图中的按键检测
                 my.num += pict_change_speed
                 my.image = my_down[int(my.num) % 4]
             else:
-               iftrans()
+                iftrans()
+        else:
+           iftrans()
     elif keyboard[keys.LEFT]:
         if allmap_info[nowmap].bool_go[int((my.center[1]) // 31.25)][int(abs((my.left - mainspeed) )// 31.25)] == 1 :
             if  my.left > mainspeed:
@@ -557,6 +577,8 @@ def move_key_board ():#主地图中的按键检测
                 my.image = my_left[int(my.num) % 4]
             else:
                 iftrans()
+        else:
+            iftrans()
     elif keyboard[keys.RIGHT]:
         if allmap_info[nowmap].bool_go[int((my.center[1]) // 31.25)][int((my.center[0] + mainspeed) // 31.25)] == 1 :
             if my.right < 996 - mainspeed:
@@ -564,7 +586,11 @@ def move_key_board ():#主地图中的按键检测
                 my.num += pict_change_speed
                 my.image = my_right[int(my.num) % 4]
             else:
-               iftrans()
+                iftrans()
+        else:
+            iftrans()
+    else:
+        my.image = my.image[:-1]+'1'
 
 
 def pos_update(nowmap = 0 ):
@@ -583,11 +609,10 @@ def sound_update() :#声音播放，包括地图音乐和对话音效
         sounds.duihua.set_volume(0.5)
         sounds.duihua.play()
         clock.schedule_unique(sounds.duihua.stop, 0.08)
-        allcondition.makesound = False
+        allcondition.makesound =False
 
     #if  allcondition.fighting :
      #   sounds.mapbgm.stop()
-
       #  allcondition.mapsound =False
     if not music.is_playing('mapbgm') :
 
@@ -820,5 +845,25 @@ def trans_8_11():
     my.right = WIDTH - gdsize * 1.2
     my.top = gdsize * 7
     allcondition.nowmap = 11
+    
+def trans_5_12():
+    game.show_info = 'erjiaonei'
+def trans_5_13():
+    game.show_info = 'nongyuannei'
+def trans_5_14():
+    game.show_info = 'likeyihaolou'
+def trans_3_15():
+    game.show_info = 'lijiaonei'
+def trans_2_16():
+    game.show_info = 'xiaoshiguannei'
+def trans_9_17():
+    game.show_info = 'changchun'
+def trans_5_18():
+    game.show_info = 'wusi'
+def trans_5_19():
+    game.show_info = 'nanmen'
+def trans_3_20():
+    game.show_info = 'dixuelounei'
+
 #-------------------------------------------------#
 pgzrun.go()
