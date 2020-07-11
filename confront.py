@@ -27,6 +27,7 @@ keyboard: Keyboard  # 类型标注
 screen: Screen  # 类型标注
 pokemons = [Actor(f'{cc}.jpg_no_bgs',rand_pos()) for cc in range(494,514) if cc != 506 and cc != 504 and cc != 505] # 504太丑了a
 ma = [Role(Actor(f'ma{cnt}',rand_pos())) for cnt in (1,2)]
+pets = []
 
 def check_ma_ef(other):
     for o in other:
@@ -34,10 +35,10 @@ def check_ma_ef(other):
             o.hp -= 1
             o.mp += 1
 def draw_move_ma():
-    ma[0].ac.angle += 3
+    ma[0].ac.angle += randint(2,4) 
     ang = ma[0].ac.angle
     dx,dy = 10*sin(ang/180*pi),10*cos(ang/180*pi)
-    dx,dy = dx+randint(-2,2) ,dy + randint(-2,2)
+    dx,dy = dx+randint(-40,40) ,dy + randint(-40,40)
     ma[0].ac.draw() 
     if not is_in(ma[0].ac.pos[0],ma[0].ac.pos[1],True):
         pos = ma[0].ac.pos 

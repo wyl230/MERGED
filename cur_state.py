@@ -52,9 +52,9 @@ class State:
             i.renew(1000 + self.difficulty_level*500,1000 + self.difficulty_level*500)
         this_part = []
         if self.difficulty_level == 2:
-            if percent(20):
-                self.shake = True
             if percent(30):
+                self.shake = True
+            if percent(22):
                 self.pack_distraction = True  
     def hp_up(self):
         self.hp += randint(1, 5) * self.hp//44 * (self.difficulty_level+1)

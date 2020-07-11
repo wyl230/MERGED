@@ -96,7 +96,7 @@ the_one = Role(Actor('op1b', rand_pos()),1000,1000, 'YOU')
 this_part = []
 opposite = [Role(Actor('pokemon2s', rand_pos()),1000,1000, 'cute dragonfly','heal')
             for _ in range(randint(2, 3))]
-add_opst = [Role(choice(all_actors)) for _ in range(5)]
+add_opst = [Role(choice(all_actors)) for _ in range(10)]
 opposite.extend(add_opst)
 # ef1 = Effect()
 
@@ -124,7 +124,12 @@ def update_confront():
             p, keyboard[keys.K], screen, a, cur_time,cnt2,state)  # False has votex
         the_one.normal_attack(
             p, keyboard[keys.SPACE], screen,a,state.enhanced)  # False has votex
-            
+        # 自动攻击
+        if state.difficulty_level == 2 and percent(50):
+            opposite[-1].normal_attack(the_one,percent(3),screen,a,False)
+        if state.difficulty_level == 2 and percent(50) and len(opposite) >= 2:
+            opposite[-2].normal_attack(the_one,percent(3),screen,a,percent(50))
+        
         the_one.heal(keyboard[keys.H],screen) 
     for q in this_part:
         q.update()
@@ -221,8 +226,8 @@ def draw_preparation(screen):
             elif i == 4:
                 screen.draw.text('you will be full of courage to explore your life.\n(the moving speed increased)', midtop=(
                     WIDTH*5//7, 4*HEIGHT // 5), fontsize=27, color=randcolors[i],fontname='alakob')
-
-            screen.draw.filled_circle(rand_pos(), 10, rand_color())
+# 不好看 取消掉 
+            # screen.draw.filled_circle(rand_pos(), 10, rand_color())
     screen.draw.text('Please click on the Phalanx on the left.\nYou have three chances.', midtop=(
         WIDTH*3//4, HEIGHT // 5), fontsize=30, color='maroon',fontname='alakob')
 
@@ -276,7 +281,6 @@ def draw_info(screen):
     screen.draw.text(f'{int(cur_time)}s',topright=(WIDTH,0))
     screen.draw.text(f'level {state.lvl}',topright=(WIDTH,30))
     if state.shake:
-        # screen.draw.text('战栗模式',topright=(WIDTH,60)，fontname = 'zh')
         screen.draw.text('战栗模式',topright = (WIDTH,60),fontname = FONTzh)
     if state.pack_distraction:
         screen.draw.text('pack distraction mode',topright=(WIDTH,90),fontname = 'zh')

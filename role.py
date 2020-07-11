@@ -33,6 +33,8 @@ class Pet:
     def __init__(self, ac):
         self.ac = ac
 
+def get_pet(o,pets):
+    pets.append(o) 
 
 class Role:
     def __init__(self, ac, hp=1000, mp=1000, name='the cutest', skills=None):

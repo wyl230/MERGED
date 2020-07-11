@@ -59,6 +59,7 @@ class Effect:
                 if i.colliderect(other.ac):
                     other.hp -= 1
                     me.mp += 2 
+            me.mp = min(me.maxMP,me.mp)
             return
         me.mp -= 1
         t = choice(normals)
@@ -68,6 +69,7 @@ class Effect:
         if t.colliderect(other.ac):
             other.hp -= 1
             me.mp += 2
+        me.mp = min(me.maxMP,me.mp)
 
     def hunt_effects(self, f, t, cur_time):
         if self.cnt == 0:
