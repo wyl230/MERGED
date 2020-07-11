@@ -84,9 +84,21 @@ def swing(*a):
     return [v + randint(-u, u) for v in a]
 
 
-def is_in(x, y):
+def is_in(x, y,f = False):
+    if f:
+        return 0 < x < WIDTH and 0 < y < HEIGHT
     return -100 < x < WIDTH + 150 and -150 < y < HEIGHT + 150
-    return 0 < x < WIDTH and 0 < y < HEIGHT
+
+def get_in(x,y):
+    if x < 0:
+        x = 55
+    if y < 0:
+        y = 55 
+    if x > WIDTH:
+        x = WIDTH - 55
+    if y > HEIGHT:
+        Y = HEIGHT - 55 
+    return x,y
 
 # def change_v(*ac):
 #     p1, p2 = ac

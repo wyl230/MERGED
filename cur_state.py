@@ -42,6 +42,7 @@ class State:
         self.enhanced = False # 强力的普通攻击 
         self.skills_power = [5 for _ in range(7)]
         # self.skill.consume =
+        self.magic_on = True # temporate
         self.pack_distraction = False
         self.purification_capacity = 2
         self.speed = 30

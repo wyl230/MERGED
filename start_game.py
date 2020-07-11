@@ -137,6 +137,14 @@ def update_confront():
     check_death()
     if state.pack_distraction:
         draw_packs() 
+    if state.magic_on:
+        draw_move_ma() 
+        # for i in this_part + opposite:
+        #     check_ma_ef(i) 
+        # check_ma_ef(the_one) 
+        check_ma_ef(this_part)
+        check_ma_ef(opposite)
+        check_ma_ef([the_one]) 
     sound_update()
 
 def check_death():
@@ -348,7 +356,7 @@ def on_mouse_down(pos,button = mouse.RIGHT):
     global vortex,vortexs
     print(f"you just click{pos}")
     if not game.on:
-        if pos[0] <= 170 and pos[1]<=50:
+        if pos[0] <= 200 and pos[1]<=50:
             state.has_skills = [True for _ in range(7)] 
             the_one.restore_cap = 3 
             state.enhanced = True 

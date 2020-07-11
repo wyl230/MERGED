@@ -1,3 +1,10 @@
+#%%
+from math import *
+cos(60/180 * pi)
+
+#%%
+
+
 import pgzrun
 from math import *
 from random import *
