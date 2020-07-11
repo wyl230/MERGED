@@ -64,7 +64,7 @@ def around_pos(pos, gap=50, l=333):
     x, y = map(int, pos)
     return [(i, j) for i in range(min(x+f(), x + f()), max(x + f(), x + f()))[::gap]
             for j in range((min(y+f(), y + f())), (max(y + f(), y + f())))[::gap]
-            if (x-i)**2 + (y-j) ** 2 <= 100000 and abs(x-i+y-j) > 100 and abs(x-i-y+j) > 100
+            if (x-i)**2 + (y-j) ** 2 <= 100000 and ((abs(x-i+y-j) > 100 and abs(x-i-y+j) > 100) or percent(20))
             ]
 
 

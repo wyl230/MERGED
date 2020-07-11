@@ -347,7 +347,7 @@ def draw_end_battle():
     if game.win_battle:
         eb.draw_win(screen,state)
     else:
-        eb.draw_lose(screen,state)
+        eb.draw_lose(screen,state,cnt2)
         
 def draw_bdinfo(bdstr):
     global ndiaoyong

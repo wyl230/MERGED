@@ -19,15 +19,19 @@ from pgzero.keyboard import keys, Keyboard
 from pgzero.screen import Screen
 keyboard: Keyboard  # 类型标注
 screen: Screen  # 类型标注
-loses = [Actor('lose', anchor=(50, 100)),Actor('lose2',(900,300))]
+ebrandnums = [randint(506,529) for _ in range(100)]
+ebcnt = 0
+loses = [Actor('lose', anchor=(50, 100)),Actor('lose2',(950,250))]
 win = Actor('win', anchor=(50, 100))
 bg = [Actor('nbg1s'), Actor('nbg2ll'), Actor('nbg2ds'), Actor(
     'confrontbg1'), Actor('confrontbg2'), Actor('confrontbg3')]
 tip = Actor('tip1', midbottom=(WIDTH//2, HEIGHT-100))
 
 
-def draw_lose(screen, state):
+def draw_lose(screen, state,cnt = 0):
+    Actor(f'{ebrandnums[cnt % 100]} (定制)').draw() 
     bg[0].draw()
+    loses[1].angle = -30
     for lose in loses:
         lose.draw()
     # screen.draw.text('hp++ mp++', midtop=(222, 444))

@@ -23,8 +23,8 @@ screen: Screen  # 类型标注
 TITLE = 'undetermined'
 FONT = 'zh'
 print(u_color)
-WIDTH = 800 
-HEIGHT = 600 
+WIDTH = 1000
+HEIGHT = 562 
 MIDDLE = WIDTH//2,HEIGHT//2
 start_time = time() 
 LINE_COLOR = 'gold' 
@@ -78,15 +78,21 @@ def update(dt):
 # 此类函数就在draw 和 update以外调用
 clock.schedule_interval(f,1.1) 
     # 
+ebrandnums = [randint(506,529) for _ in range(100)]
 # hunt = lambda :a.hunt_effects((0,0),MIDDLE,cur_time)
+loses = [Actor('lose', anchor=(50, 100)),Actor('lose2',(950,250))]
 def draw():
-    Actor('pokemon2s',pos=MIDDLE,anchor=(150,44)).draw() 
-    screen.draw.circle(MIDDLE,5,'red')
+    Actor(f'{ebrandnums[0]} (定制)').draw() 
+    # loses[1].angle = -30
+    # for lose in loses:
+        # lose.draw()
+    # Actor('pokemon2s',pos=MIDDLE,anchor=(150,44)).draw() 
+    # screen.draw.circle(MIDDLE,5,'red')
     # Actor('pet_',pos=(0,0),anchor=(135,165)).draw() 
 
-    # for x in range(1000)[::100]:
-    #     for y in range(562)[::100]:
-    #         screen.draw.circle((x,y),5,'red')
+    for x in range(1000)[::100]:
+        for y in range(562)[::100]:
+            screen.draw.circle((x,y),5,'red')
     # screen.draw.text('阿斯蒂芬',topright = (555,555),fontname = 'zh')
     # screen.draw.text('adsf',topright = (444,555),fontname = 'alakob')
     # screen.draw.text('adsf',topright = (333,555),fontname = '1stenterprises3d')
